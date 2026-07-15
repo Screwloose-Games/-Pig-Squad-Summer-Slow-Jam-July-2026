@@ -1,0 +1,110 @@
+[gd_scene format=3 uid="uid://daabskcdhrpea"]
+
+[ext_resource type="Theme" uid="uid://dxcditpyjnw8h" path="res://common/themes/theme.tres" id="1_theme"]
+[ext_resource type="Script" path="res://common/ui/main_menu/main_menu.gd" id="2_script"]
+[ext_resource type="Script" uid="uid://bbffeeruv7sea" path="res://common/ui/main_menu/SFX/main_menu_audio.gd" id="3_audio"]
+[ext_resource type="AudioStream" uid="uid://camm2n4s878j" path="res://common/audio/sfx/ui/aud_ui_navigate.wav" id="4_nav"]
+[ext_resource type="AudioStream" uid="uid://cjqacppbmh2tk" path="res://common/audio/sfx/ui/aud_ui_open.wav" id="5_open"]
+[ext_resource type="AudioStream" uid="uid://50crscd7p7bx" path="res://common/audio/sfx/ui/aud_ui_close.wav" id="6_close"]
+[ext_resource type="PackedScene" uid="uid://bvuixmv4n68a6" path="res://common/ui/options_menu/options_menu.tscn" id="7_options"]
+[ext_resource type="AudioStream" uid="uid://3es011ed4pb4" path="res://common/audio/music/music_title_screen-loop.ogg" id="8_music"]
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_theme")
+script = ExtResource("2_script")
+
+[node name="Audio Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("3_audio")
+navigate_sound = ExtResource("4_nav")
+open_sound = ExtResource("5_open")
+close_sound = ExtResource("6_close")
+
+[node name="MusicPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("8_music")
+autoplay = true
+bus = &"Music"
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.101961, 0.117647, 0.156863, 1)
+
+[node name="MainPanel" type="CenterContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="MainPanel"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MainPanel/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 60
+theme_override_constants/margin_top = 40
+theme_override_constants/margin_right = 60
+theme_override_constants/margin_bottom = 40
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MainPanel/PanelContainer/MarginContainer"]
+custom_minimum_size = Vector2(280, 0)
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="TitleLabel" type="Label" parent="MainPanel/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 42
+text = "Gladdy Caddy"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Spacer" type="Control" parent="MainPanel/PanelContainer/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 16)
+layout_mode = 2
+
+[node name="StartButton" type="Button" parent="MainPanel/PanelContainer/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Start"
+
+[node name="OptionsButton" type="Button" parent="MainPanel/PanelContainer/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Options"
+
+[node name="CreditsButton" type="Button" parent="MainPanel/PanelContainer/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Credits"
+
+[node name="QuitButton" type="Button" parent="MainPanel/PanelContainer/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Quit"
+
+[node name="OptionsMenu" parent="." instance=ExtResource("7_options")]
+unique_name_in_owner = true
+visible = false
+
+[connection signal="mouse_entered" from="MainPanel/PanelContainer/MarginContainer/VBoxContainer/StartButton" to="Audio Control" method="_on_hover"]
+[connection signal="pressed" from="MainPanel/PanelContainer/MarginContainer/VBoxContainer/StartButton" to="Audio Control" method="_on_open"]
+[connection signal="mouse_entered" from="MainPanel/PanelContainer/MarginContainer/VBoxContainer/OptionsButton" to="Audio Control" method="_on_hover"]
+[connection signal="pressed" from="MainPanel/PanelContainer/MarginContainer/VBoxContainer/OptionsButton" to="Audio Control" method="_on_open"]
+[connection signal="mouse_entered" from="MainPanel/PanelContainer/MarginContainer/VBoxContainer/CreditsButton" to="Audio Control" method="_on_hover"]
+[connection signal="pressed" from="MainPanel/PanelContainer/MarginContainer/VBoxContainer/CreditsButton" to="Audio Control" method="_on_open"]
+[connection signal="mouse_entered" from="MainPanel/PanelContainer/MarginContainer/VBoxContainer/QuitButton" to="Audio Control" method="_on_hover"]
+[connection signal="pressed" from="MainPanel/PanelContainer/MarginContainer/VBoxContainer/QuitButton" to="Audio Control" method="_on_close"]

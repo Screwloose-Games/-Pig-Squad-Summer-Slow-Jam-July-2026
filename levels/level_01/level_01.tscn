@@ -1,16 +1,25 @@
 [gd_scene format=3 uid="uid://dn2nfv67cuiqq"]
 
-[ext_resource type="Script" path="res://levels/level_01/level_01.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://bltmhcpqb43f6" path="res://levels/level_01/level_01.gd" id="1_script"]
 [ext_resource type="PackedScene" uid="uid://b8b6q7g4bsaw5" path="res://common/ui/pause_menu/pause_menu.tscn" id="2_pause"]
+[ext_resource type="PackedScene" uid="uid://b2naspawner00" path="res://junk/junk_spawner.tscn" id="3_spawner"]
+[ext_resource type="Script" uid="uid://d31e1eo7jxguu" path="res://junk/drag_controller.gd" id="4_drag"]
+
+[sub_resource type="RectangleShape2D" id="floor_shape"]
+size = Vector2(1280, 60)
+
+[sub_resource type="RectangleShape2D" id="wall_shape"]
+size = Vector2(40, 720)
 
 [node name="Level01" type="Node2D"]
 script = ExtResource("1_script")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 
-[node name="UI" type="CanvasLayer" parent="."]
+[node name="BackgroundLayer" type="CanvasLayer" parent="."]
+layer = -1
 
-[node name="Background" type="ColorRect" parent="UI"]
+[node name="Background" type="ColorRect" parent="BackgroundLayer"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -18,27 +27,56 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.14902, 0.180392, 0.141176, 1)
 
-[node name="CenterContainer" type="CenterContainer" parent="UI"]
-anchors_preset = 15
+[node name="Arena" type="StaticBody2D" parent="."]
+
+[node name="FloorVisual" type="Polygon2D" parent="Arena"]
+color = Color(0.09, 0.11, 0.09, 1)
+polygon = PackedVector2Array(-640, 330, 640, 330, 640, 390, -640, 390)
+
+[node name="Floor" type="CollisionShape2D" parent="Arena"]
+position = Vector2(0, 360)
+shape = SubResource("floor_shape")
+
+[node name="LeftWallVisual" type="Polygon2D" parent="Arena"]
+color = Color(0.09, 0.11, 0.09, 1)
+polygon = PackedVector2Array(-650, -360, -610, -360, -610, 360, -650, 360)
+
+[node name="LeftWall" type="CollisionShape2D" parent="Arena"]
+position = Vector2(-630, 0)
+shape = SubResource("wall_shape")
+
+[node name="RightWallVisual" type="Polygon2D" parent="Arena"]
+color = Color(0.09, 0.11, 0.09, 1)
+polygon = PackedVector2Array(610, -360, 650, -360, 650, 360, 610, 360)
+
+[node name="RightWall" type="CollisionShape2D" parent="Arena"]
+position = Vector2(630, 0)
+shape = SubResource("wall_shape")
+
+[node name="JunkContainer" type="Node2D" parent="."]
+
+[node name="Spawner_L" parent="." instance=ExtResource("3_spawner")]
+position = Vector2(-560, -180)
+spawn_container_path = NodePath("../JunkContainer")
+
+[node name="Spawner_R" parent="." instance=ExtResource("3_spawner")]
+position = Vector2(560, -180)
+spawn_container_path = NodePath("../JunkContainer")
+flip_horizontal = true
+
+[node name="DragController" type="Node2D" parent="."]
+script = ExtResource("4_drag")
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="HintLabel" type="Label" parent="UI"]
+anchors_preset = 10
 anchor_right = 1.0
-anchor_bottom = 1.0
+offset_top = 16.0
+offset_bottom = 46.0
 grow_horizontal = 2
-grow_vertical = 2
-
-[node name="VBoxContainer" type="VBoxContainer" parent="UI/CenterContainer"]
-layout_mode = 2
-theme_override_constants/separation = 12
-
-[node name="TitleLabel" type="Label" parent="UI/CenterContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 36
-text = "Level 01 — placeholder"
-horizontal_alignment = 1
-
-[node name="HintLabel" type="Label" parent="UI/CenterContainer/VBoxContainer"]
-layout_mode = 2
 theme_override_font_sizes/font_size = 20
-text = "Press Esc to pause"
+text = "Drag junk out of the pile. Click and hold to pick up (Esc to pause)"
 horizontal_alignment = 1
 
 [node name="PauseMenu" parent="." instance=ExtResource("2_pause")]

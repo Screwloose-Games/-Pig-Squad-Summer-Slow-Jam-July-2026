@@ -1,0 +1,162 @@
+[gd_scene format=3 uid="uid://d35tn8qf7fgxh"]
+
+[ext_resource type="Script" uid="uid://cdmpjrdxhemdn" path="res://prototypes/battle_unit.gd" id="1_qidma"]
+[ext_resource type="Script" uid="uid://bycypaqdg52do" path="res://prototypes/health_component.gd" id="2_ehq1d"]
+[ext_resource type="Theme" uid="uid://dxcditpyjnw8h" path="res://common/themes/theme.tres" id="3_bc10i"]
+[ext_resource type="Script" uid="uid://cqq48k6w5sabw" path="res://prototypes/health_bar.gd" id="4_5t6q7"]
+
+[sub_resource type="Animation" id="Animation_1yirx"]
+length = 0.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Visuals/Rig:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.15, 0.25, 0.32, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(-14, 0), Vector2(64, -4), Vector2(64, -4), Vector2(0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Visuals/Rig/Weapon:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.15, 0.25, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [0.0, -0.4, 0.6, 0.0]
+}
+tracks/2/type = "method"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0.25),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"_on_attack_strike"
+}]
+}
+
+[sub_resource type="Animation" id="Animation_x2nqv"]
+length = 0.7
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Visuals/Rig:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.35),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.0, 1.4]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Visuals/Rig:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(-20, 20)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Visuals/Rig:modulate")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0.3, 0.7),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_g08wt"]
+length = 1.2
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Visuals/Rig:position")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.6, 1.2),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(0, -6), Vector2(0, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_3ktmn"]
+_data = {
+&"attack": SubResource("Animation_1yirx"),
+&"death": SubResource("Animation_x2nqv"),
+&"idle_bob": SubResource("Animation_g08wt")
+}
+
+[node name="BattleUnit" type="Node2D" unique_id=228824660]
+script = ExtResource("1_qidma")
+
+[node name="Visuals" type="Node2D" parent="." unique_id=2053104444]
+unique_name_in_owner = true
+
+[node name="Rig" type="Node2D" parent="Visuals" unique_id=1566886219]
+
+[node name="Body" type="Polygon2D" parent="Visuals/Rig" unique_id=1759918696]
+unique_name_in_owner = true
+color = Color(0.40784314, 0.75686276, 0.9490196, 1)
+polygon = PackedVector2Array(-18, -50, 18, -50, 24, -10, 16, 40, -16, 40, -24, -10)
+
+[node name="Head" type="Polygon2D" parent="Visuals/Rig" unique_id=1791727802]
+unique_name_in_owner = true
+color = Color(0.6039216, 0.8392157, 0.96862745, 1)
+polygon = PackedVector2Array(12, -66, 8.49, -57.51, 0, -54, -8.49, -57.51, -12, -66, -8.49, -74.49, 0, -78, 8.49, -74.49)
+
+[node name="Weapon" type="Polygon2D" parent="Visuals/Rig" unique_id=1891025089]
+unique_name_in_owner = true
+color = Color(0.9647059, 0.9490196, 0.90588236, 1)
+polygon = PackedVector2Array(20, -34, 72, -24, 20, -14)
+
+[node name="HealthComponent" type="Node" parent="." unique_id=470498081]
+unique_name_in_owner = true
+script = ExtResource("2_ehq1d")
+
+[node name="AttackTimer" type="Timer" parent="." unique_id=655341121]
+unique_name_in_owner = true
+
+[node name="HealthBar" type="ProgressBar" parent="." unique_id=1126384429]
+unique_name_in_owner = true
+offset_left = -36.0
+offset_top = -112.0
+offset_right = 36.0
+offset_bottom = -88.0
+theme = ExtResource("3_bc10i")
+show_percentage = false
+script = ExtResource("4_5t6q7")
+
+[node name="NameLabel" type="Label" parent="." unique_id=1407856139]
+unique_name_in_owner = true
+offset_left = -36.0
+offset_top = -136.0
+offset_right = 36.0
+offset_bottom = -116.0
+theme_override_font_sizes/font_size = 14
+horizontal_alignment = 1
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1874658250]
+unique_name_in_owner = true
+libraries/ = SubResource("AnimationLibrary_3ktmn")

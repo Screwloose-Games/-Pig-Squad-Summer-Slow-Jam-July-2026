@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="UnitStats" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://prototypes/unit_stats.gd" id="1_stats"]
+
+[resource]
+script = ExtResource("1_stats")
+display_name = "Hero"
+max_health = 100
+damage = 12
+attack_interval = 1.2
+body_color = Color(0.407, 0.756, 0.949, 1)

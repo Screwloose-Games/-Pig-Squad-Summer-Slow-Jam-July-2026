@@ -4,13 +4,21 @@
 [ext_resource type="Script" uid="uid://bycypaqdg52do" path="res://prototypes/health_component.gd" id="2_ehq1d"]
 [ext_resource type="Theme" uid="uid://dxcditpyjnw8h" path="res://common/themes/theme.tres" id="3_bc10i"]
 [ext_resource type="Script" uid="uid://cqq48k6w5sabw" path="res://prototypes/health_bar.gd" id="4_5t6q7"]
+[ext_resource type="SpriteFrames" uid="uid://cw0357kfd55bn" path="res://prototypes/galdiator-animations/gladiator_sprite_frames.tres" id="5_frames"]
+[ext_resource type="Shader" uid="uid://bq6xvlsatvfa4" path="res://prototypes/hit_flash.gdshader" id="6_flash"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_flash"]
+resource_local_to_scene = true
+shader = ExtResource("6_flash")
+shader_parameter/flash_color = Color(1, 1, 1, 1)
+shader_parameter/flash_amount = 0.0
 
 [sub_resource type="Animation" id="Animation_1yirx"]
 length = 0.5
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Visuals/Rig:position")
+tracks/0/path = NodePath("Visuals/Sprite:position")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -19,17 +27,19 @@ tracks/0/keys = {
 "update": 0,
 "values": [Vector2(0, 0), Vector2(-14, 0), Vector2(64, -4), Vector2(64, -4), Vector2(0, 0)]
 }
-tracks/1/type = "value"
+tracks/1/type = "method"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("Visuals/Rig/Weapon:rotation")
+tracks/1/path = NodePath("Visuals/Sprite")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.15, 0.25, 0.5),
-"transitions": PackedFloat32Array(1, 1, 1, 1),
-"update": 0,
-"values": [0.0, -0.4, 0.6, 0.0]
+"times": PackedFloat32Array(0.01),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [&"attack", 2.0],
+"method": &"play"
+}]
 }
 tracks/2/type = "method"
 tracks/2/imported = false
@@ -51,7 +61,7 @@ length = 0.7
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Visuals/Rig:rotation")
+tracks/0/path = NodePath("Visuals/Sprite:rotation")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -63,7 +73,7 @@ tracks/0/keys = {
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("Visuals/Rig:position")
+tracks/1/path = NodePath("Visuals/Sprite:position")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
@@ -75,7 +85,7 @@ tracks/1/keys = {
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("Visuals/Rig:modulate")
+tracks/2/path = NodePath("Visuals/Sprite:self_modulate")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
@@ -84,6 +94,20 @@ tracks/2/keys = {
 "update": 0,
 "values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
 }
+tracks/3/type = "method"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Visuals/Sprite")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0.01),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [&"death", 1.0],
+"method": &"play"
+}]
+}
 
 [sub_resource type="Animation" id="Animation_g08wt"]
 length = 1.2
@@ -91,7 +115,7 @@ loop_mode = 1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Visuals/Rig:position")
+tracks/0/path = NodePath("Visuals/Sprite:position")
 tracks/0/interp = 2
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -99,6 +123,20 @@ tracks/0/keys = {
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
 "values": [Vector2(0, 0), Vector2(0, -6), Vector2(0, 0)]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Visuals/Sprite")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.01),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [&"idle", 1.0],
+"method": &"play"
+}]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_3ktmn"]
@@ -114,22 +152,12 @@ script = ExtResource("1_qidma")
 [node name="Visuals" type="Node2D" parent="." unique_id=2053104444]
 unique_name_in_owner = true
 
-[node name="Rig" type="Node2D" parent="Visuals" unique_id=1566886219]
-
-[node name="Body" type="Polygon2D" parent="Visuals/Rig" unique_id=1759918696]
+[node name="Sprite" type="AnimatedSprite2D" parent="Visuals" unique_id=31942429]
 unique_name_in_owner = true
-color = Color(0.40784314, 0.75686276, 0.9490196, 1)
-polygon = PackedVector2Array(-18, -50, 18, -50, 24, -10, 16, 40, -16, 40, -24, -10)
-
-[node name="Head" type="Polygon2D" parent="Visuals/Rig" unique_id=1791727802]
-unique_name_in_owner = true
-color = Color(0.6039216, 0.8392157, 0.96862745, 1)
-polygon = PackedVector2Array(12, -66, 8.49, -57.51, 0, -54, -8.49, -57.51, -12, -66, -8.49, -74.49, 0, -78, 8.49, -74.49)
-
-[node name="Weapon" type="Polygon2D" parent="Visuals/Rig" unique_id=1891025089]
-unique_name_in_owner = true
-color = Color(0.9647059, 0.9490196, 0.90588236, 1)
-polygon = PackedVector2Array(20, -34, 72, -24, 20, -14)
+material = SubResource("ShaderMaterial_flash")
+scale = Vector2(0.45, 0.45)
+sprite_frames = ExtResource("5_frames")
+animation = &"idle"
 
 [node name="HealthComponent" type="Node" parent="." unique_id=470498081]
 unique_name_in_owner = true

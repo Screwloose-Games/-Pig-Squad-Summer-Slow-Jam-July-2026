@@ -12,14 +12,11 @@ extends Node2D
 
 var target: BattleUnit
 
-var _base_colors: Dictionary = {}
 var _flash_tween: Tween
 var _shake_tween: Tween
 
 @onready var visuals: Node2D = %Visuals
-@onready var body: Polygon2D = %Body
-@onready var head: Polygon2D = %Head
-@onready var weapon: Polygon2D = %Weapon
+@onready var sprite: AnimatedSprite2D = %Sprite
 @onready var health_component: HealthComponent = %HealthComponent
 @onready var attack_timer: Timer = %AttackTimer
 @onready var health_bar: ProgressBar = %HealthBar
@@ -64,27 +61,26 @@ func is_alive() -> bool:
 func _apply_stats() -> void:
 	if stats == null:
 		return
-	body.color = stats.body_color
-	head.color = stats.body_color.lightened(0.3)
+	# Team tint rides on modulate; the death animation fades self_modulate, so the
+	# two multiply together instead of one clobbering the other.
+	sprite.modulate = stats.body_color
 	name_label.text = stats.display_name
 	attack_timer.wait_time = stats.attack_interval
 	health_bar.bind_health(health_component)
 	health_component.initialize(stats.max_health)
-	_base_colors = {body: body.color, head: head.color, weapon: weapon.color}
 
 
 func _play_hit_react() -> void:
 	if _flash_tween and _flash_tween.is_valid():
 		_flash_tween.kill()
-		_restore_colors()
+		_clear_flash()
 	if _shake_tween and _shake_tween.is_valid():
 		_shake_tween.kill()
 		visuals.position = Vector2.ZERO
-	for polygon: Polygon2D in _base_colors:
-		polygon.color = Color.WHITE
+	sprite.material.set_shader_parameter(&"flash_amount", 1.0)
 	_flash_tween = create_tween()
 	_flash_tween.tween_interval(flash_duration)
-	_flash_tween.tween_callback(_restore_colors)
+	_flash_tween.tween_callback(_clear_flash)
 	_shake_tween = create_tween()
 	var step_time: float = shake_duration / 4.0
 	for i in 3:
@@ -96,9 +92,8 @@ func _play_hit_react() -> void:
 	_shake_tween.tween_property(visuals, "position", Vector2.ZERO, step_time)
 
 
-func _restore_colors() -> void:
-	for polygon: Polygon2D in _base_colors:
-		polygon.color = _base_colors[polygon]
+func _clear_flash() -> void:
+	sprite.material.set_shader_parameter(&"flash_amount", 0.0)
 
 
 func _on_attack_timer_timeout() -> void:

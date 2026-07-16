@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://ddj2m376t3f64"]
+
+[ext_resource type="SpriteFrames" uid="uid://cw0357kfd55bn" path="res://prototypes/galdiator-animations/gladiator_sprite_frames.tres" id="1_cpk17"]
+
+[node name="GladiatorAnimations" type="Node2D" unique_id=867386669]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1698287253]
+sprite_frames = ExtResource("1_cpk17")
+animation = &"dodge"
+autoplay = "idle"

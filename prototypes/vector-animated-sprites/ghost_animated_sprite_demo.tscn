@@ -1,0 +1,20 @@
+[gd_scene format=3 uid="uid://p5ktnmxxdubk"]
+
+[ext_resource type="Script" uid="uid://4pdaboygjxor" path="res://prototypes/vector-animated-sprites/ghost_animated_sprite_demo.gd" id="1_77ow4"]
+[ext_resource type="SpriteFrames" uid="uid://cury1l505k6ma" path="res://prototypes/vector-animated-sprites/ghost_sprite_frames.tres" id="2_q3454"]
+
+[node name="GhostAnimatedSpriteDemo" type="Node2D" unique_id=1829907712]
+script = ExtResource("1_77ow4")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1055266510]
+position = Vector2(640, 400)
+sprite_frames = ExtResource("2_q3454")
+animation = &"idle"
+autoplay = "idle"
+
+[node name="InstructionsLabel" type="Label" parent="." unique_id=2002190581]
+offset_left = 460.0
+offset_top = 120.0
+offset_right = 731.0
+offset_bottom = 139.66667
+text = "1: Idle   2: Move   3: Dodge   0: Stop"

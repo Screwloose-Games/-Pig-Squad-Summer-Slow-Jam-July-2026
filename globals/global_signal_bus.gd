@@ -24,5 +24,7 @@ signal battle_ended(hero_won: bool)
 # it is seeded from UnitStats rather than carried on every change.
 signal hero_gladiator_hurt(value: int)
 signal hero_gladiator_health_changed(value: int)
+signal hero_gladiator_stamina_changed(value: int)
 signal enemy_gladiator_hurt(value: int)
 signal enemy_gladiator_health_changed(value: int)
+signal enemy_gladiator_stamina_changed(value: int)

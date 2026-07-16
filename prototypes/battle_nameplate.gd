@@ -11,14 +11,19 @@ extends PanelContainer
 @onready var level_label: Label = %LevelLabel
 @onready var health_bar: ProgressBar = %HealthBar
 @onready var hp_numbers: Label = %HpNumbers
+@onready var stamina_bar: ProgressBar = %StaminaBar
+@onready var stamina_numbers: Label = %StaminaNumbers
 
 
 func _ready() -> void:
 	hp_numbers.visible = show_hp_numbers
+	stamina_numbers.visible = show_hp_numbers
 	if side == BattleUnit.Side.HERO:
 		GlobalSignalBus.hero_gladiator_health_changed.connect(_on_health_changed)
+		GlobalSignalBus.hero_gladiator_stamina_changed.connect(_on_stamina_changed)
 	else:
 		GlobalSignalBus.enemy_gladiator_health_changed.connect(_on_health_changed)
+		GlobalSignalBus.enemy_gladiator_stamina_changed.connect(_on_stamina_changed)
 
 
 func setup(stats: UnitStats) -> void:
@@ -31,8 +36,15 @@ func setup(stats: UnitStats) -> void:
 	level_label.text = "Lv.%d" % stats.level
 	health_bar.max_value = stats.max_health
 	_on_health_changed(stats.max_health)
+	stamina_bar.max_value = stats.max_stamina
+	_on_stamina_changed(stats.max_stamina)
 
 
 func _on_health_changed(value: int) -> void:
 	health_bar.value = value
 	hp_numbers.text = "%d/%d" % [value, health_bar.max_value]
+
+
+func _on_stamina_changed(value: int) -> void:
+	stamina_bar.value = value
+	stamina_numbers.text = "%d/%d" % [value, stamina_bar.max_value]

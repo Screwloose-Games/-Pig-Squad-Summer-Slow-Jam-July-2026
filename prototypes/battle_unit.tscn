@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cdmpjrdxhemdn" path="res://prototypes/battle_unit.gd" id="1_qidma"]
 [ext_resource type="Script" uid="uid://bycypaqdg52do" path="res://prototypes/health_component.gd" id="2_ehq1d"]
+[ext_resource type="Script" path="res://prototypes/stamina_component.gd" id="3_stam"]
 [ext_resource type="SpriteFrames" uid="uid://cw0357kfd55bn" path="res://prototypes/galdiator-animations/gladiator_sprite_frames.tres" id="5_frames"]
 [ext_resource type="Shader" uid="uid://bq6xvlsatvfa4" path="res://prototypes/hit_flash.gdshader" id="6_flash"]
 
@@ -160,6 +161,10 @@ animation = &"idle"
 [node name="HealthComponent" type="Node" parent="." unique_id=470498081]
 unique_name_in_owner = true
 script = ExtResource("2_ehq1d")
+
+[node name="StaminaComponent" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("3_stam")
 
 [node name="AttackTimer" type="Timer" parent="." unique_id=655341121]
 unique_name_in_owner = true

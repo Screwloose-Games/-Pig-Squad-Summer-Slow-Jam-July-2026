@@ -23,6 +23,7 @@ var _shake_tween: Tween
 @onready var visuals: Node2D = %Visuals
 @onready var sprite: AnimatedSprite2D = %Sprite
 @onready var health_component: HealthComponent = %HealthComponent
+@onready var stamina_component: StaminaComponent = %StaminaComponent
 @onready var attack_timer: Timer = %AttackTimer
 @onready var animation_player: AnimationPlayer = %AnimationPlayer
 
@@ -33,6 +34,7 @@ func _ready() -> void:
 	attack_timer.timeout.connect(_on_attack_timer_timeout)
 	health_component.died.connect(_on_died)
 	health_component.health_changed.connect(_on_health_changed)
+	stamina_component.stamina_changed.connect(_on_stamina_changed)
 	animation_player.animation_finished.connect(_on_animation_finished)
 	animation_player.play("idle_bob")
 
@@ -71,6 +73,7 @@ func _apply_stats() -> void:
 	sprite.modulate = stats.body_color
 	attack_timer.wait_time = stats.attack_interval
 	health_component.initialize(stats.max_health)
+	stamina_component.initialize(stats.max_stamina)
 
 
 func _emit_hurt(amount: int) -> void:
@@ -85,6 +88,13 @@ func _on_health_changed(current_health: int, _max_health: int) -> void:
 		GlobalSignalBus.hero_gladiator_health_changed.emit(current_health)
 	else:
 		GlobalSignalBus.enemy_gladiator_health_changed.emit(current_health)
+
+
+func _on_stamina_changed(current_stamina: int, _max_stamina: int) -> void:
+	if side == Side.HERO:
+		GlobalSignalBus.hero_gladiator_stamina_changed.emit(current_stamina)
+	else:
+		GlobalSignalBus.enemy_gladiator_stamina_changed.emit(current_stamina)
 
 
 func _play_hit_react() -> void:
@@ -116,6 +126,12 @@ func _clear_flash() -> void:
 func _on_attack_timer_timeout() -> void:
 	if not is_alive() or target == null or not target.is_alive():
 		return
+	stamina_component.consume(stats.stamina_cost)
+	# Out of stamina → attack at half rate (double the interval). This is a repeating timer,
+	# so it takes effect from the next cycle: the attack that drains stamina to zero still
+	# fires at normal cadence, and the ones after it are slowed.
+	var rate_factor: float = 2.0 if not stamina_component.has_stamina() else 1.0
+	attack_timer.wait_time = stats.attack_interval * rate_factor
 	animation_player.play("attack")
 	GlobalSignalBus.unit_attacked.emit(self, target)
 

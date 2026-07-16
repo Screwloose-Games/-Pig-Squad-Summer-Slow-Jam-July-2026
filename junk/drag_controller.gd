@@ -47,6 +47,9 @@ func _try_pick() -> void:
 	var params := PhysicsPointQueryParameters2D.new()
 	params.position = get_global_mouse_position()
 	params.collide_with_bodies = true
+	# Only junk is pickable: without this the query also returns the arena and the
+	# gladiators, and a click on either would waste the 32-hit budget.
+	params.collision_mask = 1 << (PhysicsLayers.JUNK - 1)
 	var hits := space.intersect_point(params, 32)
 
 	# Among the pieces under the cursor, grab the one drawn on top (latest sibling).

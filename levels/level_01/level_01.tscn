@@ -3,13 +3,8 @@
 [ext_resource type="Script" uid="uid://bltmhcpqb43f6" path="res://levels/level_01/level_01.gd" id="1_script"]
 [ext_resource type="PackedScene" uid="uid://b8b6q7g4bsaw5" path="res://common/ui/pause_menu/pause_menu.tscn" id="2_pause"]
 [ext_resource type="PackedScene" uid="uid://b2naspawner00" path="res://junk/junk_spawner.tscn" id="3_spawner"]
-[ext_resource type="Script" uid="uid://d31e1eo7jxguu" path="res://junk/drag_controller.gd" id="4_drag"]
-
-[sub_resource type="RectangleShape2D" id="floor_shape"]
-size = Vector2(1280, 60)
-
-[sub_resource type="RectangleShape2D" id="wall_shape"]
-size = Vector2(40, 720)
+[ext_resource type="PackedScene" uid="uid://fyac1lehgvt4" path="res://junk/junk_arena.tscn" id="4_arena"]
+[ext_resource type="PackedScene" uid="uid://c6n5xua3mdcm2" path="res://junk/junk_field.tscn" id="5_field"]
 
 [node name="Level01" type="Node2D"]
 script = ExtResource("1_script")
@@ -27,45 +22,16 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.14902, 0.180392, 0.141176, 1)
 
-[node name="Arena" type="StaticBody2D" parent="."]
+[node name="JunkArena" parent="." instance=ExtResource("4_arena")]
 
-[node name="FloorVisual" type="Polygon2D" parent="Arena"]
-color = Color(0.09, 0.11, 0.09, 1)
-polygon = PackedVector2Array(-640, 330, 640, 330, 640, 390, -640, 390)
+[node name="JunkField" parent="." instance=ExtResource("5_field")]
 
-[node name="Floor" type="CollisionShape2D" parent="Arena"]
-position = Vector2(0, 360)
-shape = SubResource("floor_shape")
-
-[node name="LeftWallVisual" type="Polygon2D" parent="Arena"]
-color = Color(0.09, 0.11, 0.09, 1)
-polygon = PackedVector2Array(-650, -360, -610, -360, -610, 360, -650, 360)
-
-[node name="LeftWall" type="CollisionShape2D" parent="Arena"]
-position = Vector2(-630, 0)
-shape = SubResource("wall_shape")
-
-[node name="RightWallVisual" type="Polygon2D" parent="Arena"]
-color = Color(0.09, 0.11, 0.09, 1)
-polygon = PackedVector2Array(610, -360, 650, -360, 650, 360, 610, 360)
-
-[node name="RightWall" type="CollisionShape2D" parent="Arena"]
-position = Vector2(630, 0)
-shape = SubResource("wall_shape")
-
-[node name="JunkContainer" type="Node2D" parent="."]
-
-[node name="Spawner_L" parent="." instance=ExtResource("3_spawner")]
+[node name="Spawner_L" parent="JunkField/Spawners" instance=ExtResource("3_spawner")]
 position = Vector2(-560, -180)
-spawn_container_path = NodePath("../JunkContainer")
 
-[node name="Spawner_R" parent="." instance=ExtResource("3_spawner")]
+[node name="Spawner_R" parent="JunkField/Spawners" instance=ExtResource("3_spawner")]
 position = Vector2(560, -180)
-spawn_container_path = NodePath("../JunkContainer")
 flip_horizontal = true
-
-[node name="DragController" type="Node2D" parent="."]
-script = ExtResource("4_drag")
 
 [node name="UI" type="CanvasLayer" parent="."]
 

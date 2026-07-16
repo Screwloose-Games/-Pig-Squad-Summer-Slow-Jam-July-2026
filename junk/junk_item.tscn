@@ -10,7 +10,8 @@ friction = 0.6
 bounce = 0.0
 
 [node name="JunkItem" type="RigidBody2D"]
-mass = 4.0
+collision_layer = 2
+collision_mask = 7
 physics_material_override = SubResource("PhysicsMaterial_1")
 linear_damp = 1.5
 angular_damp = 3.0

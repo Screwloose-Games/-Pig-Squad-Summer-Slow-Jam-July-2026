@@ -5,9 +5,6 @@ extends Marker2D
 ## Place one on each side; the right-hand one uses flip_horizontal to throw inward.
 
 @export var junk_scene: PackedScene
-## Where spawned junk is parented. Should be a shared container in the level,
-## NOT this spawner, so items don't move if the spawner ever moves.
-@export var spawn_container_path: NodePath
 
 @export_group("Timing")
 @export var spawn_interval: float = 1.2
@@ -25,18 +22,24 @@ extends Marker2D
 
 @export var spawning_enabled: bool = true
 
-@onready var _timer: Timer = $Timer
 var _container: Node
+
+@onready var _timer: Timer = $Timer
 
 
 func _ready() -> void:
 	if junk_scene == null:
 		junk_scene = preload("res://junk/junk_item.tscn")
-	_container = get_node_or_null(spawn_container_path)
-	if _container == null:
-		_container = get_parent()
 	_timer.timeout.connect(_on_timer_timeout)
 	_restart_timer()
+
+
+## Sets where spawned junk is parented. Injected by the JunkField so items land in a
+## shared container rather than under this spawner, which would drag them along if the
+## spawner ever moved. Falls back to the parent so a spawner dropped in on its own
+## still works.
+func setup(container: Node) -> void:
+	_container = container
 
 
 func _restart_timer() -> void:
@@ -51,6 +54,10 @@ func _on_timer_timeout() -> void:
 
 
 func _spawn_one() -> void:
+	# Resolved late, not in _ready(): children are ready before their parent, so a
+	# JunkField has not had the chance to call setup() by the time _ready() runs here.
+	if _container == null:
+		_container = get_parent()
 	var junk := junk_scene.instantiate()
 	_container.add_child(junk)
 	junk.global_position = global_position

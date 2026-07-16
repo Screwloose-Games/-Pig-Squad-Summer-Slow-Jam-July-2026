@@ -5,6 +5,23 @@
 [ext_resource type="Resource" path="res://prototypes/hero_stats.tres" id="3_vd7je"]
 [ext_resource type="Resource" path="res://prototypes/enemy_stats.tres" id="4_1mkmb"]
 [ext_resource type="Theme" uid="uid://dxcditpyjnw8h" path="res://common/themes/theme.tres" id="5_hr28y"]
+[ext_resource type="PackedScene" uid="uid://bnp1tk8qy4wxv" path="res://prototypes/battle_nameplate.tscn" id="6_nmplt"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hero_pad"]
+bg_color = Color(0.13333334, 0.18431373, 0.21176471, 1)
+corner_radius_top_left = 42
+corner_radius_top_right = 42
+corner_radius_bottom_right = 42
+corner_radius_bottom_left = 42
+corner_detail = 12
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_enemy_pad"]
+bg_color = Color(0.13333334, 0.18431373, 0.21176471, 1)
+corner_radius_top_left = 29
+corner_radius_top_right = 29
+corner_radius_bottom_right = 29
+corner_radius_bottom_left = 29
+corner_detail = 12
 
 [node name="AutoBattlePrototype" type="Node2D" unique_id=1029204347]
 script = ExtResource("1_tfubv")
@@ -15,31 +32,71 @@ offset_bottom = 720.0
 mouse_filter = 2
 color = Color(0.101960786, 0.12156863, 0.16078432, 1)
 
-[node name="GroundLine" type="ColorRect" parent="." unique_id=1462284375]
-offset_top = 500.0
-offset_right = 1280.0
-offset_bottom = 506.0
+[node name="EnemyPad" type="Panel" parent="."]
+offset_left = 825.0
+offset_top = 281.0
+offset_right = 1075.0
+offset_bottom = 339.0
 mouse_filter = 2
-color = Color(0.13333334, 0.18431373, 0.21176471, 1)
+theme_override_styles/panel = SubResource("StyleBoxFlat_enemy_pad")
+
+[node name="HeroPad" type="Panel" parent="."]
+offset_left = 155.0
+offset_top = 584.0
+offset_right = 505.0
+offset_bottom = 668.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_hero_pad")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=2010325721]
 position = Vector2(640, 360)
 
 [node name="HeroGladiator" parent="." unique_id=228824660 instance=ExtResource("2_n0pu0")]
 unique_name_in_owner = true
-position = Vector2(380, 460)
+position = Vector2(330, 540)
+scale = Vector2(1.5, 1.5)
 stats = ExtResource("3_vd7je")
+side = 0
 
 [node name="EnemyGladiator" parent="." unique_id=384212235 instance=ExtResource("2_n0pu0")]
 unique_name_in_owner = true
-position = Vector2(900, 460)
+position = Vector2(950, 250)
+scale = Vector2(1.05, 1.05)
 stats = ExtResource("4_1mkmb")
+side = 1
 facing_left = true
 
 [node name="DamageNumbers" type="Node2D" parent="." unique_id=899664098]
 unique_name_in_owner = true
 
+[node name="BattleHUD" type="CanvasLayer" parent="."]
+
+[node name="EnemyNameplate" parent="BattleHUD" instance=ExtResource("6_nmplt")]
+unique_name_in_owner = true
+offset_left = 48.0
+offset_top = 40.0
+offset_right = 508.0
+offset_bottom = 112.0
+side = 1
+show_hp_numbers = false
+
+[node name="HeroNameplate" parent="BattleHUD" instance=ExtResource("6_nmplt")]
+unique_name_in_owner = true
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -508.0
+offset_top = -140.0
+offset_right = -48.0
+offset_bottom = -40.0
+grow_horizontal = 0
+grow_vertical = 0
+side = 0
+
 [node name="BattleEndOverlay" type="CanvasLayer" parent="." unique_id=1316533293]
+layer = 10
 
 [node name="OverlayRoot" type="Control" parent="BattleEndOverlay" unique_id=1093904442]
 unique_name_in_owner = true

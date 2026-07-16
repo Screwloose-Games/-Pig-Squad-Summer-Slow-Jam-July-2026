@@ -2,8 +2,6 @@
 
 [ext_resource type="Script" uid="uid://cdmpjrdxhemdn" path="res://prototypes/battle_unit.gd" id="1_qidma"]
 [ext_resource type="Script" uid="uid://bycypaqdg52do" path="res://prototypes/health_component.gd" id="2_ehq1d"]
-[ext_resource type="Theme" uid="uid://dxcditpyjnw8h" path="res://common/themes/theme.tres" id="3_bc10i"]
-[ext_resource type="Script" uid="uid://cqq48k6w5sabw" path="res://prototypes/health_bar.gd" id="4_5t6q7"]
 [ext_resource type="SpriteFrames" uid="uid://cw0357kfd55bn" path="res://prototypes/galdiator-animations/gladiator_sprite_frames.tres" id="5_frames"]
 [ext_resource type="Shader" uid="uid://bq6xvlsatvfa4" path="res://prototypes/hit_flash.gdshader" id="6_flash"]
 
@@ -165,25 +163,6 @@ script = ExtResource("2_ehq1d")
 
 [node name="AttackTimer" type="Timer" parent="." unique_id=655341121]
 unique_name_in_owner = true
-
-[node name="HealthBar" type="ProgressBar" parent="." unique_id=1126384429]
-unique_name_in_owner = true
-offset_left = -36.0
-offset_top = -112.0
-offset_right = 36.0
-offset_bottom = -88.0
-theme = ExtResource("3_bc10i")
-show_percentage = false
-script = ExtResource("4_5t6q7")
-
-[node name="NameLabel" type="Label" parent="." unique_id=1407856139]
-unique_name_in_owner = true
-offset_left = -36.0
-offset_top = -136.0
-offset_right = 36.0
-offset_bottom = -116.0
-theme_override_font_sizes/font_size = 14
-horizontal_alignment = 1
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1874658250]
 unique_name_in_owner = true

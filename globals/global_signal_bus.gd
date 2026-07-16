@@ -18,3 +18,11 @@ signal unit_attacked(attacker: Node2D, target: Node2D)
 signal unit_hurt(unit: Node2D, amount: int)
 signal unit_died(unit: Node2D)
 signal battle_ended(hero_won: bool)
+
+# combat — per-gladiator, UI-facing. Plain values, no node refs: the listener
+# already knows which gladiator it renders. Max health is static per unit, so
+# it is seeded from UnitStats rather than carried on every change.
+signal hero_gladiator_hurt(value: int)
+signal hero_gladiator_health_changed(value: int)
+signal enemy_gladiator_hurt(value: int)
+signal enemy_gladiator_health_changed(value: int)

@@ -5,6 +5,7 @@
 [resource]
 script = ExtResource("1_stats")
 display_name = "Enemy"
+level = 6
 max_health = 120
 damage = 9
 attack_interval = 1.6

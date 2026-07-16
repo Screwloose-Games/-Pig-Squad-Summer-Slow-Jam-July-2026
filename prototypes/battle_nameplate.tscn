@@ -1,0 +1,72 @@
+[gd_scene format=3 uid="uid://bnp1tk8qy4wxv"]
+
+[ext_resource type="Script" path="res://prototypes/battle_nameplate.gd" id="1_nmplt"]
+[ext_resource type="Theme" uid="uid://dxcditpyjnw8h" path="res://common/themes/theme.tres" id="2_theme"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_plate"]
+content_margin_left = 12.0
+content_margin_top = 10.0
+content_margin_right = 12.0
+content_margin_bottom = 10.0
+bg_color = Color(0.964706, 0.94902, 0.905882, 1)
+corner_radius_top_left = 9
+corner_radius_top_right = 9
+corner_radius_bottom_right = 9
+corner_radius_bottom_left = 9
+corner_detail = 12
+
+[node name="BattleNameplate" type="PanelContainer"]
+offset_right = 460.0
+offset_bottom = 130.0
+mouse_filter = 2
+theme = ExtResource("2_theme")
+theme_override_styles/panel = SubResource("StyleBoxFlat_plate")
+script = ExtResource("1_nmplt")
+
+[node name="VBox" type="VBoxContainer" parent="."]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 4
+
+[node name="TopRow" type="HBoxContainer" parent="VBox"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="NameLabel" type="Label" parent="VBox/TopRow"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+text = "Name"
+
+[node name="LevelLabel" type="Label" parent="VBox/TopRow"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+text = "Lv.1"
+
+[node name="HpRow" type="HBoxContainer" parent="VBox"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 8
+
+[node name="HpTag" type="Label" parent="VBox/HpRow"]
+layout_mode = 2
+mouse_filter = 2
+text = "HP"
+
+[node name="HealthBar" type="ProgressBar" parent="VBox/HpRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 14)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+mouse_filter = 2
+show_percentage = false
+
+[node name="HpNumbers" type="Label" parent="VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+text = "0/0"
+horizontal_alignment = 2

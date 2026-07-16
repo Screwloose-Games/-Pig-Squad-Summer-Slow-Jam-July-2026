@@ -4,7 +4,12 @@ extends Node2D
 ## Every attack hits automatically — no collision detection. Damage is
 ## applied by the attack animation's method track at the lunge apex.
 
+## Which gladiator this is. Picks the per-side signals emitted on the bus, so
+## UI can listen for one fighter without holding a reference to it.
+enum Side { HERO, ENEMY }
+
 @export var stats: UnitStats
+@export var side: BattleUnit.Side = BattleUnit.Side.HERO
 @export var facing_left: bool = false
 @export var flash_duration: float = 0.08
 @export var shake_amplitude: float = 5.0
@@ -19,8 +24,6 @@ var _shake_tween: Tween
 @onready var sprite: AnimatedSprite2D = %Sprite
 @onready var health_component: HealthComponent = %HealthComponent
 @onready var attack_timer: Timer = %AttackTimer
-@onready var health_bar: ProgressBar = %HealthBar
-@onready var name_label: Label = %NameLabel
 @onready var animation_player: AnimationPlayer = %AnimationPlayer
 
 
@@ -29,6 +32,7 @@ func _ready() -> void:
 	visuals.scale.x = -1.0 if facing_left else 1.0
 	attack_timer.timeout.connect(_on_attack_timer_timeout)
 	health_component.died.connect(_on_died)
+	health_component.health_changed.connect(_on_health_changed)
 	animation_player.animation_finished.connect(_on_animation_finished)
 	animation_player.play("idle_bob")
 
@@ -50,6 +54,7 @@ func take_damage(amount: int) -> void:
 		return
 	health_component.take_damage(amount)
 	GlobalSignalBus.unit_hurt.emit(self, amount)
+	_emit_hurt(amount)
 	if is_alive():
 		_play_hit_react()
 
@@ -64,10 +69,22 @@ func _apply_stats() -> void:
 	# Team tint rides on modulate; the death animation fades self_modulate, so the
 	# two multiply together instead of one clobbering the other.
 	sprite.modulate = stats.body_color
-	name_label.text = stats.display_name
 	attack_timer.wait_time = stats.attack_interval
-	health_bar.bind_health(health_component)
 	health_component.initialize(stats.max_health)
+
+
+func _emit_hurt(amount: int) -> void:
+	if side == Side.HERO:
+		GlobalSignalBus.hero_gladiator_hurt.emit(amount)
+	else:
+		GlobalSignalBus.enemy_gladiator_hurt.emit(amount)
+
+
+func _on_health_changed(current_health: int, _max_health: int) -> void:
+	if side == Side.HERO:
+		GlobalSignalBus.hero_gladiator_health_changed.emit(current_health)
+	else:
+		GlobalSignalBus.enemy_gladiator_health_changed.emit(current_health)
 
 
 func _play_hit_react() -> void:

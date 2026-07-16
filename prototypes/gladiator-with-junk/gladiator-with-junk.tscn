@@ -7,8 +7,8 @@
 [ext_resource type="Resource" uid="uid://d3lbxwsawyid0" path="res://prototypes/enemy_stats.tres" id="4_enemy"]
 [ext_resource type="PackedScene" uid="uid://fyac1lehgvt4" path="res://items/item_arena.tscn" id="5_arena"]
 [ext_resource type="PackedScene" uid="uid://c6n5xua3mdcm2" path="res://items/item_field.tscn" id="6_field"]
+[ext_resource type="PackedScene" uid="uid://b2naspawner00" path="res://items/item_spawner.tscn" id="7_spawner"]
 [ext_resource type="PackedScene" uid="uid://cj8k2nobstcl0" path="res://items/item_obstacle.tscn" id="8_obstacle"]
-[ext_resource type="Theme" uid="uid://dxcditpyjnw8h" path="res://common/themes/theme.tres" id="9_theme"]
 [ext_resource type="PackedScene" path="res://prototypes/battle_end_overlay.tscn" id="10_endoverlay"]
 [ext_resource type="PackedScene" uid="uid://bnp1tk8qy4wxv" path="res://prototypes/battle_nameplate.tscn" id="11_nmplt"]
 
@@ -47,6 +47,21 @@ position = Vector2(0, 40)
 
 [node name="ItemField" parent="." unique_id=1403820477 instance=ExtResource("6_field")]
 
+[node name="Spawner_L" parent="ItemField/Spawners" instance=ExtResource("7_spawner")]
+position = Vector2(60, 560)
+speed_min = 400.0
+speed_max = 650.0
+angle_min_deg = -35.0
+angle_max_deg = -15.0
+
+[node name="Spawner_R" parent="ItemField/Spawners" instance=ExtResource("7_spawner")]
+position = Vector2(1220, 560)
+speed_min = 400.0
+speed_max = 650.0
+angle_min_deg = -35.0
+angle_max_deg = -15.0
+flip_horizontal = true
+
 [node name="DamageNumbers" type="Node2D" parent="." unique_id=135575172]
 unique_name_in_owner = true
 
@@ -58,16 +73,5 @@ side = 1
 
 [node name="HeroNameplate" parent="UI" unique_id=742675149 instance=ExtResource("11_nmplt")]
 unique_name_in_owner = true
-
-[node name="HintLabel" type="Label" parent="UI" unique_id=68843788]
-anchors_preset = 10
-anchor_right = 1.0
-offset_top = 16.0
-offset_bottom = 46.0
-grow_horizontal = 2
-theme = ExtResource("9_theme")
-theme_override_font_sizes/font_size = 20
-text = "Items pile up around the hero. Click and hold to drag them clear — a carried item passes through him."
-horizontal_alignment = 1
 
 [node name="BattleEndOverlay" parent="." unique_id=1818025901 instance=ExtResource("10_endoverlay")]

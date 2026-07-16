@@ -10,6 +10,7 @@
 [ext_resource type="PackedScene" uid="uid://cj8k2nobstcl0" path="res://items/item_obstacle.tscn" id="8_obstacle"]
 [ext_resource type="Theme" uid="uid://dxcditpyjnw8h" path="res://common/themes/theme.tres" id="9_theme"]
 [ext_resource type="PackedScene" path="res://prototypes/battle_end_overlay.tscn" id="10_endoverlay"]
+[ext_resource type="PackedScene" uid="uid://bnp1tk8qy4wxv" path="res://prototypes/battle_nameplate.tscn" id="11_nmplt"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_enemy_pad"]
 bg_color = Color(0.13333334, 0.18431373, 0.21176471, 1)
@@ -79,7 +80,18 @@ angle_min_deg = -35.0
 angle_max_deg = -15.0
 flip_horizontal = true
 
+[node name="DamageNumbers" type="Node2D" parent="."]
+unique_name_in_owner = true
+
 [node name="UI" type="CanvasLayer" parent="."]
+
+[node name="EnemyNameplate" parent="UI" instance=ExtResource("11_nmplt")]
+unique_name_in_owner = true
+side = 1
+
+[node name="HeroNameplate" parent="UI" instance=ExtResource("11_nmplt")]
+unique_name_in_owner = true
+side = 0
 
 [node name="HintLabel" type="Label" parent="UI"]
 anchors_preset = 10

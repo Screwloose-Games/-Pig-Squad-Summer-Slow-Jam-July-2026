@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://fyac1lehgvt4"]
 
-[ext_resource type="Script" path="res://junk/junk_arena.gd" id="1_script"]
+[ext_resource type="Script" path="res://items/item_arena.gd" id="1_script"]
 
-[node name="JunkArena" type="StaticBody2D"]
+[node name="ItemArena" type="StaticBody2D"]
 collision_layer = 1
 collision_mask = 0
 script = ExtResource("1_script")

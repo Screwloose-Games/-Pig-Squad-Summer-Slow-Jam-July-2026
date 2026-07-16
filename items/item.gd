@@ -1,12 +1,24 @@
-class_name JunkItem
+class_name Item
 extends RigidBody2D
 
-## A single piece of junk. Heavy and hard to shove when resting in the pile;
+## A single item. Heavy and hard to shove when resting in the pile;
 ## light and easy to lift while carried by the mouse (see DragController).
 ##
-## Every piece despawns on its own timer, which is what keeps the pile from growing
-## without bound. It blinks out the tail of that timer first so a piece never simply
-## vanishes: the player gets told before the junk they were reaching for is gone.
+## Deliberately generic: this body knows nothing about swords or potions. Its identity —
+## art, footprint, and later its effect — arrives as an ItemDef, so every type shares
+## one scene and one script.
+##
+## Every item despawns on its own timer, which is what keeps the pile from growing
+## without bound. It blinks out the tail of that timer first so an item never simply
+## vanishes: the player gets told before the item they were reaching for is gone.
+
+## Authored size of the placeholder square, which the JUNK def is drawn with. Scaling the
+## placeholder against this is what lets junk honour ItemDef.size like every other type.
+const PLACEHOLDER_SIZE: Vector2 = Vector2(48, 48)
+
+## What kind of item this is. Assigned by the spawner *before* the node enters the tree,
+## because _ready() is what stamps it onto the body.
+@export var definition: ItemDef
 
 # Mass difference so carried object can hardly move uncarried object
 @export var heavy_mass: float = 4.0
@@ -29,15 +41,43 @@ extends RigidBody2D
 
 var is_carried: bool = false
 
+@onready var _sprite: Sprite2D = %Sprite
+@onready var _placeholder: Node2D = %Placeholder
+@onready var _collision_shape: CollisionShape2D = %CollisionShape2D
 @onready var _despawn_timer: Timer = %DespawnTimer
 
 
 func _ready() -> void:
-	add_to_group("junk")
+	add_to_group("items")
+	_apply_definition()
 	_apply_heavy()
 	rotation = randf_range(-PI, PI)
 	_despawn_timer.timeout.connect(_on_despawn_timer_timeout)
 	_start_despawn_countdown()
+
+
+## Stamps this generic body with the identity in `definition`: art, footprint, collision.
+func _apply_definition() -> void:
+	if definition == null:
+		push_warning("Item spawned without a definition; falling back to a plain square.")
+		return
+
+	# A fresh shape per item, the way ItemArena builds its slabs. The shape authored in the
+	# scene is one resource shared by every instance, so resizing that would resize all junk.
+	var box := RectangleShape2D.new()
+	box.size = definition.size
+	_collision_shape.shape = box
+
+	# Junk carries no art and stays the grey square the pile has always used; every other
+	# type hides the square and shows its sprite instead.
+	var has_texture: bool = definition.texture != null
+	_sprite.visible = has_texture
+	_placeholder.visible = not has_texture
+	if has_texture:
+		_sprite.texture = definition.texture
+		_sprite.scale = definition.size / definition.texture.get_size()
+	else:
+		_placeholder.scale = definition.size / PLACEHOLDER_SIZE
 
 
 ## Called by the DragController on pickup/release to swap between the
@@ -49,11 +89,11 @@ func set_carried(carried: bool) -> void:
 		gravity_scale = carried_gravity_scale
 	else:
 		_apply_heavy()
-	# Carried junk passes straight through gladiators, so a piece can be pulled clear
-	# of the pile without shoving them around. Junk still scans world and junk while
-	# carried: it must not sink through the floor, and it should still nudge the pile.
-	# This one line is the whole opt-out only because gladiators never scan junk back —
-	# see JunkObstacle.
+	# A carried item passes straight through gladiators, so it can be pulled clear of the
+	# pile without shoving them around. It still scans world and items while carried: it
+	# must not sink through the floor, and it should still nudge the pile.
+	# This one line is the whole opt-out only because gladiators never scan items back —
+	# see ItemObstacle.
 	set_collision_mask_value(PhysicsLayers.GLADIATOR, not carried)
 
 

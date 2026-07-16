@@ -4,10 +4,10 @@
 [ext_resource type="PackedScene" uid="uid://d35tn8qf7fgxh" path="res://prototypes/battle_unit.tscn" id="2_unit"]
 [ext_resource type="Resource" path="res://prototypes/hero_stats.tres" id="3_hero"]
 [ext_resource type="Resource" path="res://prototypes/enemy_stats.tres" id="4_enemy"]
-[ext_resource type="PackedScene" uid="uid://fyac1lehgvt4" path="res://junk/junk_arena.tscn" id="5_arena"]
-[ext_resource type="PackedScene" uid="uid://c6n5xua3mdcm2" path="res://junk/junk_field.tscn" id="6_field"]
-[ext_resource type="PackedScene" uid="uid://b2naspawner00" path="res://junk/junk_spawner.tscn" id="7_spawner"]
-[ext_resource type="PackedScene" uid="uid://cj8k2nobstcl0" path="res://junk/junk_obstacle.tscn" id="8_obstacle"]
+[ext_resource type="PackedScene" uid="uid://fyac1lehgvt4" path="res://items/item_arena.tscn" id="5_arena"]
+[ext_resource type="PackedScene" uid="uid://c6n5xua3mdcm2" path="res://items/item_field.tscn" id="6_field"]
+[ext_resource type="PackedScene" uid="uid://b2naspawner00" path="res://items/item_spawner.tscn" id="7_spawner"]
+[ext_resource type="PackedScene" uid="uid://cj8k2nobstcl0" path="res://items/item_obstacle.tscn" id="8_obstacle"]
 [ext_resource type="Theme" uid="uid://dxcditpyjnw8h" path="res://common/themes/theme.tres" id="9_theme"]
 [ext_resource type="PackedScene" path="res://prototypes/battle_end_overlay.tscn" id="10_endoverlay"]
 
@@ -39,7 +39,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_enemy_pad")
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(640, 360)
 
-[node name="JunkArena" parent="." instance=ExtResource("5_arena")]
+[node name="ItemArena" parent="." instance=ExtResource("5_arena")]
 position = Vector2(640, 348)
 arena_size = Vector2(1280, 640)
 wall_color = Color(0.13333334, 0.18431373, 0.21176471, 1)
@@ -59,19 +59,19 @@ scale = Vector2(1.5, 1.5)
 stats = ExtResource("3_hero")
 side = 0
 
-[node name="JunkObstacle" parent="HeroGladiator" instance=ExtResource("8_obstacle")]
+[node name="ItemObstacle" parent="HeroGladiator" instance=ExtResource("8_obstacle")]
 position = Vector2(0, 40)
 
-[node name="JunkField" parent="." instance=ExtResource("6_field")]
+[node name="ItemField" parent="." instance=ExtResource("6_field")]
 
-[node name="Spawner_L" parent="JunkField/Spawners" instance=ExtResource("7_spawner")]
+[node name="Spawner_L" parent="ItemField/Spawners" instance=ExtResource("7_spawner")]
 position = Vector2(60, 560)
 speed_min = 400.0
 speed_max = 650.0
 angle_min_deg = -35.0
 angle_max_deg = -15.0
 
-[node name="Spawner_R" parent="JunkField/Spawners" instance=ExtResource("7_spawner")]
+[node name="Spawner_R" parent="ItemField/Spawners" instance=ExtResource("7_spawner")]
 position = Vector2(1220, 560)
 speed_min = 400.0
 speed_max = 650.0
@@ -89,7 +89,7 @@ offset_bottom = 46.0
 grow_horizontal = 2
 theme = ExtResource("9_theme")
 theme_override_font_sizes/font_size = 20
-text = "Junk piles up around the hero. Click and hold to drag it clear — carried junk passes through him."
+text = "Items pile up around the hero. Click and hold to drag them clear — a carried item passes through him."
 horizontal_alignment = 1
 
 [node name="BattleEndOverlay" parent="." instance=ExtResource("10_endoverlay")]

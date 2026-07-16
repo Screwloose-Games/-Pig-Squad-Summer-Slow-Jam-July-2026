@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://b2naspawner00"]
+
+[ext_resource type="Script" uid="uid://b5yvqshj7pxwj" path="res://items/item_spawner.gd" id="1_script"]
+[ext_resource type="PackedScene" uid="uid://c7k3n8junkit0" path="res://items/item.tscn" id="2_item"]
+[ext_resource type="Resource" path="res://items/defs/junk.tres" id="3_junk"]
+[ext_resource type="Resource" path="res://items/defs/helmet.tres" id="4_helmet"]
+[ext_resource type="Resource" path="res://items/defs/meat.tres" id="5_meat"]
+[ext_resource type="Resource" path="res://items/defs/potion.tres" id="6_potion"]
+[ext_resource type="Resource" path="res://items/defs/sword.tres" id="7_sword"]
+
+[node name="ItemSpawner" type="Marker2D"]
+script = ExtResource("1_script")
+item_scene = ExtResource("2_item")
+item_defs = Array[ItemDef]([ExtResource("3_junk"), ExtResource("4_helmet"), ExtResource("5_meat"), ExtResource("6_potion"), ExtResource("7_sword")])
+
+[node name="Timer" type="Timer" parent="."]

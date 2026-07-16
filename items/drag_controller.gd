@@ -1,23 +1,23 @@
 extends Node2D
 
-## Handles mouse dragging of junk.
+## Handles mouse dragging of items.
 ##
-## Kept separate from JunkItem for the following reasons:
+## Kept separate from Item for the following reasons:
 ## 1. Resolves multi-object clicks (currently an edge case but also future proof if we add z-indexing)
 ## 2. Drag state handling: there can only be 1 dragged object at a time
-## 3. Better to do input handling once in one place versus potentially multiplied over many junk objects
+## 3. Better to do input handling once in one place versus potentially multiplied over many item objects
 ##
-## The carried junk is driven toward the cursor by a spring force that is clamped to max_force.
-## The clamp is key: just enough force to nudge junk but not enough to lift it.
+## The carried item is driven toward the cursor by a spring force that is clamped to max_force.
+## The clamp is key: just enough force to nudge an item but not enough to lift it.
 
 ## Pull strength toward the cursor (per pixel of offset).
 @export var stiffness: float = 120.0
 ## Velocity damping to prevent overshoot/wobble (unless we want this?).
 @export var damping: float = 12.0
-## Hard cap on drag force. Tune so a carried piece shoves loose junk but cannot lift junk if buried.
+## Hard cap on drag force. Tune so a carried piece shoves loose items but cannot lift one if buried.
 @export var max_force: float = 6000.0
 
-var _dragged: JunkItem = null
+var _dragged: Item = null
 
 
 # Use _input (not _unhandled_input) so the click is seen before the viewport's
@@ -47,17 +47,17 @@ func _try_pick() -> void:
 	var params := PhysicsPointQueryParameters2D.new()
 	params.position = get_global_mouse_position()
 	params.collide_with_bodies = true
-	# Only junk is pickable: without this the query also returns the arena and the
+	# Only items are pickable: without this the query also returns the arena and the
 	# gladiators, and a click on either would waste the 32-hit budget.
-	params.collision_mask = 1 << (PhysicsLayers.JUNK - 1)
+	params.collision_mask = 1 << (PhysicsLayers.ITEM - 1)
 	var hits := space.intersect_point(params, 32)
 
 	# Among the pieces under the cursor, grab the one drawn on top (latest sibling).
-	var best: JunkItem = null
+	var best: Item = null
 	var best_order := -1
 	for hit in hits:
 		var collider = hit.collider
-		if collider is JunkItem and collider.get_index() > best_order:
+		if collider is Item and collider.get_index() > best_order:
 			best_order = collider.get_index()
 			best = collider
 
@@ -67,7 +67,7 @@ func _try_pick() -> void:
 
 
 func _release() -> void:
-	# Junk despawns on its own timer, so the carried piece can be freed out from under us
+	# Items despawn on their own timer, so the carried one can be freed out from under us
 	# mid-drag. is_instance_valid is the dependable test for that, and _dragged is cleared
 	# either way so a dangling reference is never left behind.
 	if is_instance_valid(_dragged):

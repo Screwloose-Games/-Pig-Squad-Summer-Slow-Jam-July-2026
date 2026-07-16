@@ -1,12 +1,12 @@
 [gd_scene format=3 uid="uid://c6n5xua3mdcm2"]
 
-[ext_resource type="Script" path="res://junk/junk_field.gd" id="1_script"]
-[ext_resource type="Script" uid="uid://d31e1eo7jxguu" path="res://junk/drag_controller.gd" id="2_drag"]
+[ext_resource type="Script" path="res://items/item_field.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://d31e1eo7jxguu" path="res://items/drag_controller.gd" id="2_drag"]
 
-[node name="JunkField" type="Node2D"]
+[node name="ItemField" type="Node2D"]
 script = ExtResource("1_script")
 
-[node name="JunkContainer" type="Node2D" parent="."]
+[node name="ItemContainer" type="Node2D" parent="."]
 unique_name_in_owner = true
 
 [node name="DragController" type="Node2D" parent="."]

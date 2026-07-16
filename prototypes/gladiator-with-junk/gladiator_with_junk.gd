@@ -1,15 +1,15 @@
 extends Node2D
-## Prototype: the auto-battler's gladiators standing in the junk field, so junk can be
+## Prototype: the auto-battler's gladiators standing in the item field, so items can be
 ## thrown in, pile up on the ground, and be rummaged through while they fight.
 ##
 ## Combines two prototypes without either learning about the other. The gladiators are
 ## the same battle_unit.tscn the auto-battle prototype uses and know nothing about
-## junk — the hero only takes part because a JunkObstacle is mounted under him in this
-## scene. Only the hero has one: junk lives in his ground plane, while the enemy sits
-## up the perspective slope where junk never reaches.
+## items — the hero only takes part because an ItemObstacle is mounted under him in this
+## scene. Only the hero has one: items live in his ground plane, while the enemy sits
+## up the perspective slope where items never reach.
 ##
 ## Nameplates and damage numbers are deliberately left out — auto-battle-prototype.tscn
-## already covers those. This one is about junk. The end overlay earns its place because
+## already covers those. This one is about items. The end overlay earns its place because
 ## without it the fight has no visible ending: the loser just quietly stops.
 
 var _battle_over: bool = false

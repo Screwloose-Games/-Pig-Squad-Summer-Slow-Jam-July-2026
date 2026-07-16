@@ -1,15 +1,15 @@
 @tool
-class_name JunkArena
+class_name ItemArena
 extends StaticBody2D
 
-## Static floor and side walls that keep junk in the play area.
+## Static floor and side walls that keep items in the play area.
 ##
 ## The collision shapes and the drawn visuals are both generated from the exports
 ## below, so the two cannot drift apart the way hand-placed shapes and matching
 ## Polygon2Ds do. @tool so the box is visible while placing it in the editor.
 ##
-## The collision_mask stays empty: junk scans the world layer, the world never scans
-## back. See JunkObstacle for why nothing static in this project scans.
+## The collision_mask stays empty: items scan the world layer, the world never scans
+## back. See ItemObstacle for why nothing static in this project scans.
 
 ## Inner play area, centred on this node. The walls flank it and the floor caps it,
 ## so the floor's top surface sits at arena_size.y / 2.

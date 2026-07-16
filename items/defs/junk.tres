@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="ItemDef" format=3]
+
+[ext_resource type="Script" uid="uid://cc2rqda1v7756" path="res://items/item_def.gd" id="1_def"]
+
+[resource]
+script = ExtResource("1_def")
+display_name = "Junk"
+type = 0
+size = Vector2(48, 48)
+spawn_weight = 1.0

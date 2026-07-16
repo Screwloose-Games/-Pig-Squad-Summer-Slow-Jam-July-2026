@@ -6,9 +6,9 @@ extends RefCounted
 ## set_collision_mask_value), not bitmask values.
 ##
 ## Rule of thumb for this project: static bodies (world, gladiator) keep an empty
-## collision_mask and never scan. Only the junk scans, so junk alone decides what it
-## touches. See JunkObstacle for why that matters.
+## collision_mask and never scan. Only items scan, so items alone decide what they
+## touch. See ItemObstacle for why that matters.
 
 const WORLD: int = 1
-const JUNK: int = 2
+const ITEM: int = 2
 const GLADIATOR: int = 3

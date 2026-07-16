@@ -20,7 +20,7 @@ You are not the gladiator — you're the gladiator's assistant. Your hero fights
 
 ## Core Loop
 
-1. The crowd throws junk into the arena, forming piles
+1. The crowd throws items into the arena — worthless junk mixed in with swords, helmets, potions and meat — forming piles
 2. Dig through piles top-down — flick items aside to reach buried ones; flick trash off-screen
 3. Manage a small inventory (~4-slot quick bar): give items to the hero immediately or save them for later
 4. React to the fight state (hero taking damage → stockpile potions; heavy dodging → grab stamina items)

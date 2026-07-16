@@ -2,9 +2,9 @@
 
 [ext_resource type="Script" uid="uid://bltmhcpqb43f6" path="res://levels/level_01/level_01.gd" id="1_script"]
 [ext_resource type="PackedScene" uid="uid://b8b6q7g4bsaw5" path="res://common/ui/pause_menu/pause_menu.tscn" id="2_pause"]
-[ext_resource type="PackedScene" uid="uid://b2naspawner00" path="res://junk/junk_spawner.tscn" id="3_spawner"]
-[ext_resource type="PackedScene" uid="uid://fyac1lehgvt4" path="res://junk/junk_arena.tscn" id="4_arena"]
-[ext_resource type="PackedScene" uid="uid://c6n5xua3mdcm2" path="res://junk/junk_field.tscn" id="5_field"]
+[ext_resource type="PackedScene" uid="uid://b2naspawner00" path="res://items/item_spawner.tscn" id="3_spawner"]
+[ext_resource type="PackedScene" uid="uid://fyac1lehgvt4" path="res://items/item_arena.tscn" id="4_arena"]
+[ext_resource type="PackedScene" uid="uid://c6n5xua3mdcm2" path="res://items/item_field.tscn" id="5_field"]
 
 [node name="Level01" type="Node2D"]
 script = ExtResource("1_script")
@@ -22,14 +22,14 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.14902, 0.180392, 0.141176, 1)
 
-[node name="JunkArena" parent="." instance=ExtResource("4_arena")]
+[node name="ItemArena" parent="." instance=ExtResource("4_arena")]
 
-[node name="JunkField" parent="." instance=ExtResource("5_field")]
+[node name="ItemField" parent="." instance=ExtResource("5_field")]
 
-[node name="Spawner_L" parent="JunkField/Spawners" instance=ExtResource("3_spawner")]
+[node name="Spawner_L" parent="ItemField/Spawners" instance=ExtResource("3_spawner")]
 position = Vector2(-560, -180)
 
-[node name="Spawner_R" parent="JunkField/Spawners" instance=ExtResource("3_spawner")]
+[node name="Spawner_R" parent="ItemField/Spawners" instance=ExtResource("3_spawner")]
 position = Vector2(560, -180)
 flip_horizontal = true
 
@@ -42,7 +42,7 @@ offset_top = 16.0
 offset_bottom = 46.0
 grow_horizontal = 2
 theme_override_font_sizes/font_size = 20
-text = "Drag junk out of the pile. Click and hold to pick up (Esc to pause)"
+text = "Drag items out of the pile. Click and hold to pick up (Esc to pause)"
 horizontal_alignment = 1
 
 [node name="PauseMenu" parent="." instance=ExtResource("2_pause")]

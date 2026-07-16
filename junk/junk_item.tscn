@@ -28,3 +28,7 @@ default_color = Color(0.32, 0.32, 0.32, 1)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_1")
+
+[node name="DespawnTimer" type="Timer" parent="."]
+unique_name_in_owner = true
+one_shot = true

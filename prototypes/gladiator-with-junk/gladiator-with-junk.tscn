@@ -9,6 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://b2naspawner00" path="res://junk/junk_spawner.tscn" id="7_spawner"]
 [ext_resource type="PackedScene" uid="uid://cj8k2nobstcl0" path="res://junk/junk_obstacle.tscn" id="8_obstacle"]
 [ext_resource type="Theme" uid="uid://dxcditpyjnw8h" path="res://common/themes/theme.tres" id="9_theme"]
+[ext_resource type="PackedScene" path="res://prototypes/battle_end_overlay.tscn" id="10_endoverlay"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_enemy_pad"]
 bg_color = Color(0.13333334, 0.18431373, 0.21176471, 1)
@@ -90,3 +91,5 @@ theme = ExtResource("9_theme")
 theme_override_font_sizes/font_size = 20
 text = "Junk piles up around the hero. Click and hold to drag it clear — carried junk passes through him."
 horizontal_alignment = 1
+
+[node name="BattleEndOverlay" parent="." instance=ExtResource("10_endoverlay")]

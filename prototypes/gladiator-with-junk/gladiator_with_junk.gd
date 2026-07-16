@@ -8,8 +8,11 @@ extends Node2D
 ## scene. Only the hero has one: junk lives in his ground plane, while the enemy sits
 ## up the perspective slope where junk never reaches.
 ##
-## Battle presentation (nameplates, damage numbers, the end overlay) is deliberately
-## left out — auto-battle-prototype.tscn already covers that. This one is about junk.
+## Nameplates and damage numbers are deliberately left out — auto-battle-prototype.tscn
+## already covers those. This one is about junk. The end overlay earns its place because
+## without it the fight has no visible ending: the loser just quietly stops.
+
+var _battle_over: bool = false
 
 @onready var hero: BattleUnit = %HeroGladiator
 @onready var enemy: BattleUnit = %EnemyGladiator
@@ -18,5 +21,16 @@ extends Node2D
 func _ready() -> void:
 	hero.setup(enemy)
 	enemy.setup(hero)
+	GlobalSignalBus.unit_died.connect(_on_unit_died)
 	hero.start_fighting()
 	enemy.start_fighting()
+
+
+func _on_unit_died(unit: Node2D) -> void:
+	if _battle_over:
+		return
+	_battle_over = true
+	hero.stop_fighting()
+	enemy.stop_fighting()
+	# The overlay listens for this on the bus; it is not wired to this scene directly.
+	GlobalSignalBus.battle_ended.emit(unit == enemy)

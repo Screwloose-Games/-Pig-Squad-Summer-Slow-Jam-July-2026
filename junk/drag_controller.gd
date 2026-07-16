@@ -67,6 +67,9 @@ func _try_pick() -> void:
 
 
 func _release() -> void:
-	if _dragged != null:
+	# Junk despawns on its own timer, so the carried piece can be freed out from under us
+	# mid-drag. is_instance_valid is the dependable test for that, and _dragged is cleared
+	# either way so a dangling reference is never left behind.
+	if is_instance_valid(_dragged):
 		_dragged.set_carried(false)
-		_dragged = null
+	_dragged = null

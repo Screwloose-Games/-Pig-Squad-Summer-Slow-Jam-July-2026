@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://d35tn8qf7fgxh" path="res://prototypes/battle_unit.tscn" id="2_n0pu0"]
 [ext_resource type="Resource" path="res://prototypes/hero_stats.tres" id="3_vd7je"]
 [ext_resource type="Resource" path="res://prototypes/enemy_stats.tres" id="4_1mkmb"]
-[ext_resource type="Theme" uid="uid://dxcditpyjnw8h" path="res://common/themes/theme.tres" id="5_hr28y"]
+[ext_resource type="PackedScene" path="res://prototypes/battle_end_overlay.tscn" id="5_endovl"]
 [ext_resource type="PackedScene" uid="uid://bnp1tk8qy4wxv" path="res://prototypes/battle_nameplate.tscn" id="6_nmplt"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hero_pad"]
@@ -95,51 +95,4 @@ grow_horizontal = 0
 grow_vertical = 0
 side = 0
 
-[node name="BattleEndOverlay" type="CanvasLayer" parent="." unique_id=1316533293]
-layer = 10
-
-[node name="OverlayRoot" type="Control" parent="BattleEndOverlay" unique_id=1093904442]
-unique_name_in_owner = true
-visible = false
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-theme = ExtResource("5_hr28y")
-
-[node name="Dim" type="ColorRect" parent="BattleEndOverlay/OverlayRoot" unique_id=187974352]
-layout_mode = 0
-anchor_right = 1.0
-anchor_bottom = 1.0
-color = Color(0, 0, 0, 0.5)
-
-[node name="CenterContainer" type="CenterContainer" parent="BattleEndOverlay/OverlayRoot" unique_id=888122581]
-layout_mode = 0
-anchor_right = 1.0
-anchor_bottom = 1.0
-
-[node name="Panel" type="PanelContainer" parent="BattleEndOverlay/OverlayRoot/CenterContainer" unique_id=711280950]
-layout_mode = 2
-
-[node name="Margin" type="MarginContainer" parent="BattleEndOverlay/OverlayRoot/CenterContainer/Panel" unique_id=1582691744]
-layout_mode = 2
-theme_override_constants/margin_left = 32
-theme_override_constants/margin_top = 24
-theme_override_constants/margin_right = 32
-theme_override_constants/margin_bottom = 24
-
-[node name="VBox" type="VBoxContainer" parent="BattleEndOverlay/OverlayRoot/CenterContainer/Panel/Margin" unique_id=908292566]
-layout_mode = 2
-theme_override_constants/separation = 16
-
-[node name="ResultLabel" type="Label" parent="BattleEndOverlay/OverlayRoot/CenterContainer/Panel/Margin/VBox" unique_id=749923520]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_font_sizes/font_size = 40
-text = "Victory!"
-horizontal_alignment = 1
-
-[node name="RestartButton" type="Button" parent="BattleEndOverlay/OverlayRoot/CenterContainer/Panel/Margin/VBox" unique_id=1267332314]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Restart"
+[node name="BattleEndOverlay" parent="." instance=ExtResource("5_endovl")]

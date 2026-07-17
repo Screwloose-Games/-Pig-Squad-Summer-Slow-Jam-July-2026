@@ -128,6 +128,19 @@ func enter_slot(at_global: Vector2) -> void:
 	angular_velocity = 0.0
 	global_position = at_global
 	rotation = 0.0
+	# The node-side writes above are not enough for a body that is mid-flight when it is
+	# dropped: the physics server still owns a moving rigid body's state and delivers one
+	# more sync after this call, snapping the item back to wherever it was released. Writing
+	# the same state into the server directly is what makes the teleport stick.
+	PhysicsServer2D.body_set_state(
+		get_rid(), PhysicsServer2D.BODY_STATE_TRANSFORM, Transform2D(0.0, at_global)
+	)
+	PhysicsServer2D.body_set_state(
+		get_rid(), PhysicsServer2D.BODY_STATE_LINEAR_VELOCITY, Vector2.ZERO
+	)
+	PhysicsServer2D.body_set_state(
+		get_rid(), PhysicsServer2D.BODY_STATE_ANGULAR_VELOCITY, 0.0
+	)
 	collision_layer = 0
 	set_collision_layer_value(PhysicsLayers.SLOTTED_ITEM, true)
 	collision_mask = 0

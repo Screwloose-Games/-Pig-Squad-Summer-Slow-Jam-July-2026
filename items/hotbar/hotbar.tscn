@@ -1,0 +1,88 @@
+[gd_scene format=3 uid="uid://hotbar4slots01"]
+
+[ext_resource type="Script" path="res://items/hotbar/hotbar.gd" id="1_hotbar"]
+[ext_resource type="Script" path="res://items/hotbar/hotbar_slot.gd" id="2_slot"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_slot"]
+content_margin_left = 6.0
+content_margin_top = 4.0
+content_margin_right = 6.0
+content_margin_bottom = 4.0
+bg_color = Color(0, 0, 0, 0.15)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.85, 0.85, 0.8, 0.7)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[node name="Hotbar" type="HBoxContainer"]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_top = -84.0
+offset_bottom = -12.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/separation = 12
+script = ExtResource("1_hotbar")
+
+[node name="Slot1" type="PanelContainer" parent="."]
+custom_minimum_size = Vector2(72, 72)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_slot")
+script = ExtResource("2_slot")
+
+[node name="NumberLabel" type="Label" parent="Slot1"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme_override_font_sizes/font_size = 12
+text = "1"
+
+[node name="Slot2" type="PanelContainer" parent="."]
+custom_minimum_size = Vector2(72, 72)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_slot")
+script = ExtResource("2_slot")
+slot_number = 2
+
+[node name="NumberLabel" type="Label" parent="Slot2"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme_override_font_sizes/font_size = 12
+text = "2"
+
+[node name="Slot3" type="PanelContainer" parent="."]
+custom_minimum_size = Vector2(72, 72)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_slot")
+script = ExtResource("2_slot")
+slot_number = 3
+
+[node name="NumberLabel" type="Label" parent="Slot3"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme_override_font_sizes/font_size = 12
+text = "3"
+
+[node name="Slot4" type="PanelContainer" parent="."]
+custom_minimum_size = Vector2(72, 72)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_slot")
+script = ExtResource("2_slot")
+slot_number = 4
+
+[node name="NumberLabel" type="Label" parent="Slot4"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme_override_font_sizes/font_size = 12
+text = "4"

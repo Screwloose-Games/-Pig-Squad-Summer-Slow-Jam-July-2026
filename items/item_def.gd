@@ -30,3 +30,6 @@ enum Type { JUNK, HELMET, MEAT, POTION, SWORD }
 ## Share of a spawner's mix, relative to the other defs on that spawner. 0 disables this type
 ## there. Relative rather than absolute so rarity is tuned by editing defs, never code.
 @export var spawn_weight: float = 1.0
+
+## What using this item on a unit does. Null for items that are just clutter.
+@export var effect: ItemEffect

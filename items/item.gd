@@ -39,7 +39,12 @@ const PLACEHOLDER_SIZE: Vector2 = Vector2(48, 48)
 ## Alpha each blink dips to. Kept above 0 so a blinking piece is still grabbable.
 @export var blink_min_alpha: float = 0.2
 
+## Fired when the DragController picks this item up, including out of a hotbar slot —
+## that is the moment a slot holding this item must consider it gone.
+signal grabbed
+
 var is_carried: bool = false
+var is_slotted: bool = false
 
 @onready var _sprite: Sprite2D = %Sprite
 @onready var _placeholder: Node2D = %Placeholder
@@ -84,6 +89,8 @@ func _apply_definition() -> void:
 ## light (carried) and heavy (resting) physics profiles.
 func set_carried(carried: bool) -> void:
 	is_carried = carried
+	if carried and is_slotted:
+		_exit_slot()
 	if carried:
 		mass = carried_mass
 		gravity_scale = carried_gravity_scale
@@ -95,6 +102,48 @@ func set_carried(carried: bool) -> void:
 	# This one line is the whole opt-out only because gladiators never scan items back —
 	# see ItemObstacle.
 	set_collision_mask_value(PhysicsLayers.GLADIATOR, not carried)
+	if carried:
+		grabbed.emit()
+
+
+func has_effect() -> bool:
+	return definition != null and definition.effect != null
+
+
+## The single consumption path: drop-on-gladiator and hotbar hotkeys both land here.
+## Freeing the node takes the despawn timer and any blink tween with it.
+func use_on(unit: BattleUnit) -> void:
+	if not has_effect():
+		return
+	definition.effect.apply(unit)
+	queue_free()
+
+
+## Parks this item in a hotbar slot: frozen in place, upright, and moved to a layer
+## nothing scans so the pile treats it as gone. The despawn countdown keeps running —
+## a slot preserves the item, not its lifetime.
+func enter_slot(at_global: Vector2) -> void:
+	freeze = true
+	linear_velocity = Vector2.ZERO
+	angular_velocity = 0.0
+	global_position = at_global
+	rotation = 0.0
+	collision_layer = 0
+	set_collision_layer_value(PhysicsLayers.SLOTTED_ITEM, true)
+	collision_mask = 0
+	is_slotted = true
+
+
+## Undoes enter_slot when the item is grabbed back out. Runs before set_carried's
+## gladiator opt-out so that line lands on the restored mask.
+func _exit_slot() -> void:
+	freeze = false
+	collision_layer = 0
+	set_collision_layer_value(PhysicsLayers.ITEM, true)
+	set_collision_mask_value(PhysicsLayers.WORLD, true)
+	set_collision_mask_value(PhysicsLayers.ITEM, true)
+	set_collision_mask_value(PhysicsLayers.GLADIATOR, true)
+	is_slotted = false
 
 
 func _apply_heavy() -> void:

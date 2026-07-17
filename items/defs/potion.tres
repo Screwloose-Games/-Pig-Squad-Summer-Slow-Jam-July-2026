@@ -1,7 +1,11 @@
-[gd_resource type="Resource" script_class="ItemDef" format=3]
+[gd_resource type="Resource" script_class="ItemDef" format=3 uid="uid://coji3fhclf1a8"]
 
 [ext_resource type="Script" uid="uid://cc2rqda1v7756" path="res://items/item_def.gd" id="1_def"]
 [ext_resource type="Texture2D" uid="uid://j18jg1ytc26b" path="res://assets/items/potion.png" id="2_art"]
+[ext_resource type="Script" uid="uid://dnlcwu8nh4sia" path="res://items/effects/stamina_restore_effect.gd" id="3_fx"]
+
+[sub_resource type="Resource" id="Resource_stamina"]
+script = ExtResource("3_fx")
 
 [resource]
 script = ExtResource("1_def")
@@ -9,4 +13,4 @@ display_name = "Potion"
 type = 3
 texture = ExtResource("2_art")
 size = Vector2(30, 51)
-spawn_weight = 1.0
+effect = SubResource("Resource_stamina")

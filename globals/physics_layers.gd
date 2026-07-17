@@ -12,3 +12,6 @@ extends RefCounted
 const WORLD: int = 1
 const ITEM: int = 2
 const GLADIATOR: int = 3
+## Items parked in a hotbar slot. Nothing scans this layer except the DragController's
+## pick query, so a slotted item is grabbable but invisible to the pile's physics.
+const SLOTTED_ITEM: int = 4

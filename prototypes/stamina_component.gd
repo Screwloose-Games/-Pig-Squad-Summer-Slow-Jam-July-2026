@@ -2,6 +2,7 @@ class_name StaminaComponent
 extends Node
 ## Tracks a unit's stamina and emits a signal on change. Attacks spend stamina; unlike
 ## health there is no regen and no death — an empty bar simply slows the unit's attacks.
+## Items are the only way stamina comes back (see StaminaRestoreEffect).
 
 signal stamina_changed(current_stamina: int, max_stamina: int)
 
@@ -19,6 +20,10 @@ func initialize(new_max_stamina: int) -> void:
 
 func consume(amount: int) -> void:
 	current_stamina -= amount
+
+
+func restore(amount: int) -> void:
+	current_stamina += amount
 
 
 func has_stamina() -> bool:

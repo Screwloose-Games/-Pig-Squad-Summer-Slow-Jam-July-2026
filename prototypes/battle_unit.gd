@@ -14,6 +14,10 @@ enum Side { HERO, ENEMY }
 @export var flash_duration: float = 0.08
 @export var shake_amplitude: float = 5.0
 @export var shake_duration: float = 0.15
+## Thickness (in texels) of the drop-target outline set_outline draws around the sprite.
+## Texels, not pixels: the gladiator art renders at roughly two-thirds texture scale,
+## so this reads about half as wide on screen.
+@export var outline_width: float = 12.0
 
 var target: BattleUnit
 
@@ -121,6 +125,13 @@ func _play_hit_react() -> void:
 
 func _clear_flash() -> void:
 	sprite.material.set_shader_parameter(&"flash_amount", 0.0)
+
+
+## Shows/hides an outline around the sprite's silhouette. Used as the hover highlight
+## while a usable item is dragged over this unit; safe alongside the hit flash because
+## the material is local to each scene instance.
+func set_outline(enabled: bool) -> void:
+	sprite.material.set_shader_parameter(&"outline_width", outline_width if enabled else 0.0)
 
 
 func _on_attack_timer_timeout() -> void:

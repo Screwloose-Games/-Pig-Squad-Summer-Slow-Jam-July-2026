@@ -27,3 +27,6 @@ movies/
 # Python bytecode (from tooling in .github/scripts, tools/, etc.)
 __pycache__/
 *.pyc
+
+# tj-actions/changed-files write_output_files target (CI runtime)
+.github/outputs/

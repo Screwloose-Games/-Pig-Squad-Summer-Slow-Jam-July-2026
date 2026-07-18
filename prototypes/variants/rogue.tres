@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="UnitStats" format=3 uid="uid://cdfwv2uh25r5r"]
+
+[ext_resource type="Script" uid="uid://xwvlmxrxhun3" path="res://prototypes/unit_stats.gd" id="1_stats"]
+[ext_resource type="Script" uid="uid://ohg0rsi3yjkx" path="res://prototypes/attack_pattern.gd" id="2_pattern"]
+
+[sub_resource type="Resource" id="Resource_rogue_pattern"]
+script = ExtResource("2_pattern")
+duration = 2.0
+beats = Array[float]([0.0, 0.45])
+
+[resource]
+script = ExtResource("1_stats")
+display_name = "Rogue"
+level = 6
+max_health = 70
+max_stamina = 120
+damage = 4
+pattern = SubResource("Resource_rogue_pattern")
+attack_interval = 2.0
+stamina_cost = 5
+body_color = Color(0.404, 0.831, 0.478, 1)

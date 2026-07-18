@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="UnitStats" format=3 uid="uid://l7gr0vgm6ek7"]
+
+[ext_resource type="Script" uid="uid://xwvlmxrxhun3" path="res://prototypes/unit_stats.gd" id="1_stats"]
+[ext_resource type="Script" uid="uid://ohg0rsi3yjkx" path="res://prototypes/attack_pattern.gd" id="2_pattern"]
+
+[sub_resource type="Resource" id="Resource_slugger_pattern"]
+script = ExtResource("2_pattern")
+duration = 3.0
+
+[resource]
+script = ExtResource("1_stats")
+display_name = "Slugger"
+level = 6
+max_health = 180
+max_stamina = 200
+damage = 22
+pattern = SubResource("Resource_slugger_pattern")
+attack_interval = 3.0
+stamina_cost = 20
+body_color = Color(0.878, 0.298, 0.271, 1)

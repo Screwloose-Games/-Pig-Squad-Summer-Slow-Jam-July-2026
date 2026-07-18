@@ -1,0 +1,84 @@
+[gd_scene format=3 uid="uid://8b68kxoeaeca"]
+
+[ext_resource type="Script" uid="uid://dccnrjn6ya3t5" path="res://prototypes/enemy-variants/enemy_variants.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://xwvlmxrxhun3" path="res://prototypes/unit_stats.gd" id="2_8vquu"]
+[ext_resource type="Texture2D" uid="uid://kqn1j8eajpw6" path="res://assets/solid_background.png" id="2_uc0us"]
+[ext_resource type="PackedScene" uid="uid://d35tn8qf7fgxh" path="res://prototypes/battle_unit.tscn" id="2_unit"]
+[ext_resource type="Resource" uid="uid://b2endwgom7oms" path="res://prototypes/hero_stats.tres" id="3_hero"]
+[ext_resource type="PackedScene" uid="uid://fyac1lehgvt4" path="res://items/item_arena.tscn" id="5_arena"]
+[ext_resource type="PackedScene" uid="uid://c6n5xua3mdcm2" path="res://items/item_field.tscn" id="6_field"]
+[ext_resource type="PackedScene" uid="uid://b2naspawner00" path="res://items/item_spawner.tscn" id="7_spawner"]
+[ext_resource type="PackedScene" uid="uid://cj8k2nobstcl0" path="res://items/item_obstacle.tscn" id="8_obstacle"]
+[ext_resource type="PackedScene" path="res://prototypes/battle_end_overlay.tscn" id="10_endoverlay"]
+[ext_resource type="PackedScene" uid="uid://bnp1tk8qy4wxv" path="res://prototypes/battle_nameplate.tscn" id="11_nmplt"]
+[ext_resource type="Resource" path="res://prototypes/variants/rogue.tres" id="12_rogue"]
+[ext_resource type="Resource" path="res://prototypes/variants/gladiator.tres" id="13_gladiator"]
+[ext_resource type="Resource" path="res://prototypes/variants/slugger.tres" id="14_slugger"]
+
+[node name="EnemyVariants" type="Node2D" unique_id=245101405]
+script = ExtResource("1_script")
+variants = Array[ExtResource("2_8vquu")]([ExtResource("13_gladiator"), ExtResource("12_rogue"), ExtResource("14_slugger")])
+
+[node name="BackgroundCol" type="Sprite2D" parent="." unique_id=1546625404]
+position = Vector2(666, 354)
+scale = Vector2(0.3954997, 0.3954997)
+texture = ExtResource("2_uc0us")
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=908120210]
+position = Vector2(640, 360)
+
+[node name="ItemArena" parent="." unique_id=880940395 instance=ExtResource("5_arena")]
+position = Vector2(640, 348)
+arena_size = Vector2(1280, 640)
+wall_color = Color(0.13333334, 0.18431373, 0.21176471, 1)
+
+[node name="EnemyGladiator" parent="." unique_id=793875075 instance=ExtResource("2_unit")]
+unique_name_in_owner = true
+position = Vector2(889.99994, 489.00003)
+scale = Vector2(1.05, 1.05)
+stats = ExtResource("13_gladiator")
+side = 1
+facing_left = true
+
+[node name="HeroGladiator" parent="." unique_id=789514587 instance=ExtResource("2_unit")]
+unique_name_in_owner = true
+position = Vector2(330, 540)
+scale = Vector2(1.5, 1.5)
+stats = ExtResource("3_hero")
+
+[node name="ItemObstacle" parent="HeroGladiator" unique_id=1363220173 instance=ExtResource("8_obstacle")]
+position = Vector2(0, 40)
+
+[node name="ItemField" parent="." unique_id=1644526762 instance=ExtResource("6_field")]
+
+[node name="Spawner_L" parent="ItemField/Spawners" instance=ExtResource("7_spawner")]
+position = Vector2(60, 560)
+speed_min = 400.0
+speed_max = 650.0
+angle_min_deg = -35.0
+angle_max_deg = -15.0
+
+[node name="Spawner_R" parent="ItemField/Spawners" instance=ExtResource("7_spawner")]
+position = Vector2(1220, 560)
+speed_min = 400.0
+speed_max = 650.0
+angle_min_deg = -35.0
+angle_max_deg = -15.0
+flip_horizontal = true
+
+[node name="DamageNumbers" type="Node2D" parent="." unique_id=828385212]
+unique_name_in_owner = true
+
+[node name="UI" type="CanvasLayer" parent="." unique_id=270499458]
+
+[node name="EnemyNameplate" parent="UI" unique_id=599420821 instance=ExtResource("11_nmplt")]
+unique_name_in_owner = true
+side = 1
+
+[node name="HeroNameplate" parent="UI" unique_id=1450684462 instance=ExtResource("11_nmplt")]
+unique_name_in_owner = true
+
+[node name="BattleEndOverlay" parent="." unique_id=1656853328 instance=ExtResource("10_endoverlay")]
+unique_name_in_owner = true
+
+[editable path="ItemField"]

@@ -1,5 +1,5 @@
-extends Node
 class_name MusicPlayerLooper
+extends Node
 
 signal intro_started
 signal loop_started
@@ -20,13 +20,13 @@ func _ready() -> void:
 func play_music() -> void:
     if not _has_player_streams():
         return
-    
+
     _stop_music(false)
-    
+
     intro_player.play()
     intro_started.emit()
     loop_player.stream.loop = true
-    
+
     var intro_length := intro_player.stream.get_length()
     get_tree().create_timer(intro_length).timeout.connect(
         func() -> void: _switch_stream_to_loop()
@@ -38,7 +38,7 @@ func stop_music() -> void:
 func _switch_stream_to_loop() -> void:
     if not _has_player_streams():
         return
-    
+
     loop_player.play()
     loop_started.emit()
 
@@ -68,11 +68,11 @@ func _has_players() -> bool:
         return false
 
     return true
-    
+
 func _has_player_streams() -> bool:
     if intro_player == null:
         return false
-    
+
     if intro_player.stream == null:
         return false
 

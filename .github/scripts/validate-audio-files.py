@@ -15,6 +15,8 @@ import wave
 
 MAX_FILE_SIZE = 49 * 1024 * 1024  # 49 MB
 
+AUDIO_EXTENSIONS = (".wav", ".ogg", ".mp3")
+
 # Applies to all audio files (.wav, .ogg, .mp3, ...) regardless of container format:
 # lowercase letters/numbers only, underscores as the sole word separator, lowercase extension.
 FILENAME_PATTERN = re.compile(r"^[a-z0-9]+(_[a-z0-9]+)*\.[a-z0-9]+$")
@@ -161,7 +163,34 @@ class AudioFileValidator:
         return not self.errors
 
 
+def load_changed_files_json(path):
+    """Parse a tj-actions/changed-files `all_changed_files` JSON array (json: true)
+    and return the audio-file paths within it.
+
+    The action MUST be configured with `safe_output: false`; otherwise it
+    backslash-escapes special characters (spaces, (), !, ', ...) even in JSON
+    mode, producing invalid JSON like [\\"a\\",\\"b\\"]. We detect that case and
+    raise an actionable error instead of a raw JSONDecodeError.
+    """
+    with open(path, "r", encoding="utf-8") as fh:
+        raw = fh.read()
+    try:
+        files = json.loads(raw)
+    except json.JSONDecodeError as e:
+        hint = ""
+        if '\\"' in raw or raw.lstrip().startswith("[\\"):
+            hint = (
+                "\nThe input looks backslash-escaped. The tj-actions/changed-files "
+                "step must set `safe_output: false` so it emits valid JSON."
+            )
+        raise SystemExit(f"Could not parse changed-files JSON from {path}: {e}{hint}")
+    if not isinstance(files, list):
+        raise SystemExit(f"Expected a JSON array in {path}, got {type(files).__name__}")
+    return [f for f in files if isinstance(f, str) and f.lower().endswith(AUDIO_EXTENSIONS)]
+
+
 def main(audio_files):
+    """Validate the given audio files. Returns True if any file had errors."""
     validators = [AudioFileValidator(file_path) for file_path in audio_files]
     reports = [AudioFileReport(file_path) for file_path in audio_files]
     has_errors = False
@@ -177,8 +206,9 @@ def main(audio_files):
     for report in reports:
         print(report)
 
-    out_path = os.environ["GITHUB_OUTPUT"]
-    if os.path.exists(out_path):
+    # GITHUB_OUTPUT is only set inside GitHub Actions; skip it for local runs/tests.
+    out_path = os.environ.get("GITHUB_OUTPUT")
+    if out_path and os.path.exists(out_path):
         with open(out_path, "a") as fh:
             reports_str = "\n\n".join([str(report) for report in reports])
             metadata = {
@@ -189,20 +219,29 @@ def main(audio_files):
             print("EOF", file=fh)
             print(f"has_errors={'true' if has_errors else 'false'}", file=fh)
 
+    return has_errors
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("audio_files", nargs="*", help="Audio file paths to validate")
     parser.add_argument("--file-list", metavar="FILE",
                          help="Read newline-separated audio file paths from FILE (safe for filenames containing spaces)")
+    parser.add_argument("--changed-files-json", metavar="FILE",
+                         help="Read a tj-actions/changed-files JSON array from FILE, filter to audio files, and validate them. "
+                              "This is the exact code path CI uses -- point it at a saved payload to reproduce CI locally.")
     args = parser.parse_args()
 
     audio_files = list(args.audio_files)
     if args.file_list:
         with open(args.file_list, "r", encoding="utf-8") as f:
             audio_files.extend(line for line in f.read().splitlines() if line.strip())
+    if args.changed_files_json:
+        audio_files.extend(load_changed_files_json(args.changed_files_json))
 
     if not audio_files:
-        parser.error("no audio files given -- pass paths and/or --file-list FILE")
+        # No audio files to check (e.g. the changed-files list had none) -- not an error.
+        print("No audio files to validate.")
+        sys.exit(0)
 
-    main(audio_files)
+    sys.exit(1 if main(audio_files) else 0)

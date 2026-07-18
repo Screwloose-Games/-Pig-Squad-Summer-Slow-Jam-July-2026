@@ -1,5 +1,12 @@
-# Run this with: python .github/scripts/validate-audio-files.py $(cat audio_files.txt)
+# Run this with: python .github/scripts/validate-audio-files.py --file-list audio_files.txt
+# (positional args also work for one-off manual checks: ... validate-audio-files.py foo.wav bar.ogg)
+#
+# NOTE: don't invoke this via `$(cat audio_files.txt)` -- unquoted shell command
+# substitution word-splits on spaces, which silently corrupts any filename that
+# contains a space (exactly the kind of filename this script needs to flag).
+# --file-list reads the file directly, one path per line, with no shell involved.
 
+import argparse
 import json
 import os
 import re
@@ -184,9 +191,18 @@ def main(audio_files):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print("Usage: python validate-audio-files.py <audio_file1> <audio_file2> ...")
-        sys.exit(1)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("audio_files", nargs="*", help="Audio file paths to validate")
+    parser.add_argument("--file-list", metavar="FILE",
+                         help="Read newline-separated audio file paths from FILE (safe for filenames containing spaces)")
+    args = parser.parse_args()
 
-    audio_files = sys.argv[1:]
+    audio_files = list(args.audio_files)
+    if args.file_list:
+        with open(args.file_list, "r", encoding="utf-8") as f:
+            audio_files.extend(line for line in f.read().splitlines() if line.strip())
+
+    if not audio_files:
+        parser.error("no audio files given -- pass paths and/or --file-list FILE")
+
     main(audio_files)

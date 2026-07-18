@@ -2,19 +2,21 @@
 
 [ext_resource type="Script" uid="uid://bltmhcpqb43f6" path="res://levels/level_01/level_01.gd" id="1_script"]
 [ext_resource type="PackedScene" uid="uid://b8b6q7g4bsaw5" path="res://common/ui/pause_menu/pause_menu.tscn" id="2_pause"]
-[ext_resource type="PackedScene" uid="uid://b2naspawner00" path="res://items/item_spawner.tscn" id="3_spawner"]
 [ext_resource type="PackedScene" uid="uid://fyac1lehgvt4" path="res://items/item_arena.tscn" id="4_arena"]
+[ext_resource type="Script" uid="uid://epyxhh71y1vi" path="res://globals/sound_manager/music_player_looper.gd" id="5_dm0pi"]
 [ext_resource type="PackedScene" uid="uid://c6n5xua3mdcm2" path="res://items/item_field.tscn" id="5_field"]
+[ext_resource type="AudioStream" uid="uid://ca5j6yetesg3q" path="res://common/audio/music/I've Got Your Back! (Intro).ogg" id="6_aqob7"]
+[ext_resource type="AudioStream" uid="uid://b3we3vcmsdk2i" path="res://common/audio/music/I've Got Your Back! (Main Loop).ogg" id="7_thp0t"]
 
-[node name="Level01" type="Node2D"]
+[node name="Level01" type="Node2D" unique_id=1423457754]
 script = ExtResource("1_script")
 
-[node name="Camera2D" type="Camera2D" parent="."]
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1666167529]
 
-[node name="BackgroundLayer" type="CanvasLayer" parent="."]
+[node name="BackgroundLayer" type="CanvasLayer" parent="." unique_id=736457941]
 layer = -1
 
-[node name="Background" type="ColorRect" parent="BackgroundLayer"]
+[node name="Background" type="ColorRect" parent="BackgroundLayer" unique_id=1807508961]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -22,20 +24,13 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.14902, 0.180392, 0.141176, 1)
 
-[node name="ItemArena" parent="." instance=ExtResource("4_arena")]
+[node name="ItemArena" parent="." unique_id=1855141997 instance=ExtResource("4_arena")]
 
-[node name="ItemField" parent="." instance=ExtResource("5_field")]
+[node name="ItemField" parent="." unique_id=1025199402 instance=ExtResource("5_field")]
 
-[node name="Spawner_L" parent="ItemField/Spawners" instance=ExtResource("3_spawner")]
-position = Vector2(-560, -180)
+[node name="UI" type="CanvasLayer" parent="." unique_id=1712525188]
 
-[node name="Spawner_R" parent="ItemField/Spawners" instance=ExtResource("3_spawner")]
-position = Vector2(560, -180)
-flip_horizontal = true
-
-[node name="UI" type="CanvasLayer" parent="."]
-
-[node name="HintLabel" type="Label" parent="UI"]
+[node name="HintLabel" type="Label" parent="UI" unique_id=133856149]
 anchors_preset = 10
 anchor_right = 1.0
 offset_top = 16.0
@@ -45,4 +40,16 @@ theme_override_font_sizes/font_size = 20
 text = "Drag items out of the pile. Click and hold to pick up (Esc to pause)"
 horizontal_alignment = 1
 
-[node name="PauseMenu" parent="." instance=ExtResource("2_pause")]
+[node name="PauseMenu" parent="." unique_id=249738592 instance=ExtResource("2_pause")]
+
+[node name="MusicPlayerLooper" type="Node" parent="." unique_id=455179996 node_paths=PackedStringArray("intro_player", "loop_player")]
+script = ExtResource("5_dm0pi")
+intro_player = NodePath("MusicIntroAudioStreamPlayer")
+loop_player = NodePath("MusicLoopAudioStreamPlayer")
+metadata/_custom_type_script = "uid://epyxhh71y1vi"
+
+[node name="MusicIntroAudioStreamPlayer" type="AudioStreamPlayer" parent="MusicPlayerLooper" unique_id=30579130]
+stream = ExtResource("6_aqob7")
+
+[node name="MusicLoopAudioStreamPlayer" type="AudioStreamPlayer" parent="MusicPlayerLooper" unique_id=425742153]
+stream = ExtResource("7_thp0t")

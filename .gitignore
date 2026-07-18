@@ -23,3 +23,7 @@ movies/
 .env
 
 .idea/
+
+# Python bytecode (from tooling in .github/scripts, tools/, etc.)
+__pycache__/
+*.pyc

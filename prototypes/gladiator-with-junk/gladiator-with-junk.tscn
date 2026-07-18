@@ -54,17 +54,17 @@ position = Vector2(0, 40)
 
 [node name="ItemField" parent="." unique_id=1403820477 instance=ExtResource("6_field")]
 
-[node name="Spawner_L" parent="ItemField/Spawners" instance=ExtResource("7_spawner")]
-position = Vector2(60, 560)
-speed_min = 400.0
-speed_max = 650.0
+[node name="Spawner_L" parent="ItemField" unique_id=39242015 instance=ExtResource("7_spawner")]
+position = Vector2(46, 178)
+speed_min = 1000.0
+speed_max = 1200.0
 angle_min_deg = -35.0
 angle_max_deg = -15.0
 
-[node name="Spawner_R" parent="ItemField/Spawners" instance=ExtResource("7_spawner")]
-position = Vector2(1220, 560)
-speed_min = 400.0
-speed_max = 650.0
+[node name="Spawner_R" parent="ItemField" unique_id=1284137633 instance=ExtResource("7_spawner")]
+position = Vector2(1234, 170)
+speed_min = 1000.0
+speed_max = 1200.0
 angle_min_deg = -35.0
 angle_max_deg = -15.0
 flip_horizontal = true
@@ -94,14 +94,14 @@ hero = NodePath("../../HeroGladiator")
 
 [node name="BattleEndOverlay" parent="." unique_id=1818025901 instance=ExtResource("10_endoverlay")]
 
-[node name="MusicPlayerLooper" type="Node" parent="." node_paths=PackedStringArray("intro_player", "loop_player")]
+[node name="MusicPlayerLooper" type="Node" parent="." unique_id=661107575 node_paths=PackedStringArray("intro_player", "loop_player")]
 script = ExtResource("20_looper")
 intro_player = NodePath("MusicIntroAudioStreamPlayer")
 loop_player = NodePath("MusicLoopAudioStreamPlayer")
 metadata/_custom_type_script = "uid://epyxhh71y1vi"
 
-[node name="MusicIntroAudioStreamPlayer" type="AudioStreamPlayer" parent="MusicPlayerLooper"]
+[node name="MusicIntroAudioStreamPlayer" type="AudioStreamPlayer" parent="MusicPlayerLooper" unique_id=1917529182]
 stream = ExtResource("21_mintro")
 
-[node name="MusicLoopAudioStreamPlayer" type="AudioStreamPlayer" parent="MusicPlayerLooper"]
+[node name="MusicLoopAudioStreamPlayer" type="AudioStreamPlayer" parent="MusicPlayerLooper" unique_id=303153998]
 stream = ExtResource("22_mloop")

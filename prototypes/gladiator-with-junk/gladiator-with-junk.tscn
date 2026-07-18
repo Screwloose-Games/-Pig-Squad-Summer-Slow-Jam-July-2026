@@ -13,6 +13,9 @@
 [ext_resource type="PackedScene" path="res://prototypes/battle_end_overlay.tscn" id="10_endoverlay"]
 [ext_resource type="PackedScene" uid="uid://bnp1tk8qy4wxv" path="res://prototypes/battle_nameplate.tscn" id="11_nmplt"]
 [ext_resource type="PackedScene" uid="uid://blrpgg17yowrc" path="res://items/hotbar/hotbar.tscn" id="12_hotbar"]
+[ext_resource type="Script" uid="uid://epyxhh71y1vi" path="res://globals/sound_manager/music_player_looper.gd" id="20_looper"]
+[ext_resource type="AudioStream" uid="uid://ca5j6yetesg3q" path="res://common/audio/music/I've Got Your Back! (Intro).ogg" id="21_mintro"]
+[ext_resource type="AudioStream" uid="uid://b3we3vcmsdk2i" path="res://common/audio/music/I've Got Your Back! (Main Loop).ogg" id="22_mloop"]
 
 [node name="GladiatorWithJunk" type="Node2D" unique_id=750415397]
 script = ExtResource("1_script")
@@ -90,3 +93,15 @@ grow_vertical = 1
 hero = NodePath("../../HeroGladiator")
 
 [node name="BattleEndOverlay" parent="." unique_id=1818025901 instance=ExtResource("10_endoverlay")]
+
+[node name="MusicPlayerLooper" type="Node" parent="." node_paths=PackedStringArray("intro_player", "loop_player")]
+script = ExtResource("20_looper")
+intro_player = NodePath("MusicIntroAudioStreamPlayer")
+loop_player = NodePath("MusicLoopAudioStreamPlayer")
+metadata/_custom_type_script = "uid://epyxhh71y1vi"
+
+[node name="MusicIntroAudioStreamPlayer" type="AudioStreamPlayer" parent="MusicPlayerLooper"]
+stream = ExtResource("21_mintro")
+
+[node name="MusicLoopAudioStreamPlayer" type="AudioStreamPlayer" parent="MusicPlayerLooper"]
+stream = ExtResource("22_mloop")

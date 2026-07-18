@@ -14,6 +14,9 @@
 [ext_resource type="Resource" path="res://prototypes/variants/rogue.tres" id="12_rogue"]
 [ext_resource type="Resource" path="res://prototypes/variants/gladiator.tres" id="13_gladiator"]
 [ext_resource type="Resource" path="res://prototypes/variants/slugger.tres" id="14_slugger"]
+[ext_resource type="Script" uid="uid://epyxhh71y1vi" path="res://globals/sound_manager/music_player_looper.gd" id="20_looper"]
+[ext_resource type="AudioStream" uid="uid://ca5j6yetesg3q" path="res://common/audio/music/I've Got Your Back! (Intro).ogg" id="21_mintro"]
+[ext_resource type="AudioStream" uid="uid://b3we3vcmsdk2i" path="res://common/audio/music/I've Got Your Back! (Main Loop).ogg" id="22_mloop"]
 
 [node name="EnemyVariants" type="Node2D" unique_id=245101405]
 script = ExtResource("1_script")
@@ -80,5 +83,17 @@ unique_name_in_owner = true
 
 [node name="BattleEndOverlay" parent="." unique_id=1656853328 instance=ExtResource("10_endoverlay")]
 unique_name_in_owner = true
+
+[node name="MusicPlayerLooper" type="Node" parent="." node_paths=PackedStringArray("intro_player", "loop_player")]
+script = ExtResource("20_looper")
+intro_player = NodePath("MusicIntroAudioStreamPlayer")
+loop_player = NodePath("MusicLoopAudioStreamPlayer")
+metadata/_custom_type_script = "uid://epyxhh71y1vi"
+
+[node name="MusicIntroAudioStreamPlayer" type="AudioStreamPlayer" parent="MusicPlayerLooper"]
+stream = ExtResource("21_mintro")
+
+[node name="MusicLoopAudioStreamPlayer" type="AudioStreamPlayer" parent="MusicPlayerLooper"]
+stream = ExtResource("22_mloop")
 
 [editable path="ItemField"]

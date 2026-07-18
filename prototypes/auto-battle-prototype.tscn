@@ -7,6 +7,9 @@
 [ext_resource type="Resource" uid="uid://d3lbxwsawyid0" path="res://prototypes/enemy_stats.tres" id="4_1mkmb"]
 [ext_resource type="PackedScene" path="res://prototypes/battle_end_overlay.tscn" id="5_endovl"]
 [ext_resource type="PackedScene" uid="uid://bnp1tk8qy4wxv" path="res://prototypes/battle_nameplate.tscn" id="6_nmplt"]
+[ext_resource type="Script" uid="uid://epyxhh71y1vi" path="res://globals/sound_manager/music_player_looper.gd" id="20_looper"]
+[ext_resource type="AudioStream" uid="uid://ca5j6yetesg3q" path="res://common/audio/music/I've Got Your Back! (Intro).ogg" id="21_mintro"]
+[ext_resource type="AudioStream" uid="uid://b3we3vcmsdk2i" path="res://common/audio/music/I've Got Your Back! (Main Loop).ogg" id="22_mloop"]
 
 [node name="AutoBattlePrototype" type="Node2D" unique_id=1029204347]
 script = ExtResource("1_tfubv")
@@ -62,3 +65,15 @@ grow_horizontal = 0
 grow_vertical = 0
 
 [node name="BattleEndOverlay" parent="." unique_id=1612086026 instance=ExtResource("5_endovl")]
+
+[node name="MusicPlayerLooper" type="Node" parent="." node_paths=PackedStringArray("intro_player", "loop_player")]
+script = ExtResource("20_looper")
+intro_player = NodePath("MusicIntroAudioStreamPlayer")
+loop_player = NodePath("MusicLoopAudioStreamPlayer")
+metadata/_custom_type_script = "uid://epyxhh71y1vi"
+
+[node name="MusicIntroAudioStreamPlayer" type="AudioStreamPlayer" parent="MusicPlayerLooper"]
+stream = ExtResource("21_mintro")
+
+[node name="MusicLoopAudioStreamPlayer" type="AudioStreamPlayer" parent="MusicPlayerLooper"]
+stream = ExtResource("22_mloop")

@@ -1,8 +1,12 @@
 class_name BattleUnit
 extends Node2D
-## A stationary auto-battle unit that attacks its target on a timer.
+## A stationary auto-battle unit that attacks its target on a rhythm.
 ## Every attack hits automatically — no collision detection. Damage is
 ## applied by the attack animation's method track at the lunge apex.
+##
+## Cadence comes from the unit's AttackPattern: this scrubs a playhead along that looping
+## timeline and swings on each beat it crosses. Anything that makes a unit fight faster or
+## slower scales the playhead, so it bends the whole rhythm rather than one interval.
 
 ## Which gladiator this is. Picks the per-side signals emitted on the bus, so
 ## UI can listen for one fighter without holding a reference to it.
@@ -24,18 +28,24 @@ var target: BattleUnit
 var _flash_tween: Tween
 var _shake_tween: Tween
 
+## The unit's cadence. Resolved from stats once, so a null pattern costs nothing per frame.
+var _pattern: AttackPattern
+var _fighting: bool = false
+## Position along the pattern's loop, in seconds, kept within [0, pattern.duration).
+var _playhead: float = 0.0
+## Index into pattern.beats of the next beat this unit owes.
+var _next_beat: int = 0
+
 @onready var visuals: Node2D = %Visuals
 @onready var sprite: AnimatedSprite2D = %Sprite
 @onready var health_component: HealthComponent = %HealthComponent
 @onready var stamina_component: StaminaComponent = %StaminaComponent
-@onready var attack_timer: Timer = %AttackTimer
 @onready var animation_player: AnimationPlayer = %AnimationPlayer
 
 
 func _ready() -> void:
 	_apply_stats()
 	visuals.scale.x = -1.0 if facing_left else 1.0
-	attack_timer.timeout.connect(_on_attack_timer_timeout)
 	health_component.died.connect(_on_died)
 	health_component.health_changed.connect(_on_health_changed)
 	stamina_component.stamina_changed.connect(_on_stamina_changed)
@@ -43,16 +53,66 @@ func _ready() -> void:
 	animation_player.play("idle_bob")
 
 
+func _process(delta: float) -> void:
+	if not _fighting or _pattern == null:
+		return
+	if _pattern.duration <= 0.0 or _pattern.beats.is_empty():
+		return
+	_playhead += delta * _speed_scale()
+	# Walk the timeline rather than testing it once, so a frame that steps over several beats —
+	# a long hitch, or a loop shorter than the frame — fires them all in order instead of
+	# silently dropping attacks. Terminates because every iteration either consumes a beat or
+	# subtracts a duration the guard above proved positive.
+	while true:
+		if _next_beat < _pattern.beats.size():
+			if _playhead < _pattern.beats[_next_beat]:
+				return
+			_fire_beat()
+			_next_beat += 1
+		else:
+			if _playhead < _pattern.duration:
+				return
+			_playhead -= _pattern.duration
+			_next_beat = 0
+
+
 func setup(new_target: BattleUnit) -> void:
 	target = new_target
 
 
+## Re-seed the unit, optionally as a different stat block, and put it back on its feet ready to
+## fight again. Exists for swapping a unit's identity after it is already in the tree, which the
+## editor-placed gladiators need since _apply_stats() runs during their own _ready().
+func reset_for_new_fight(new_stats: UnitStats = null) -> void:
+	if new_stats != null:
+		stats = new_stats
+	stop_fighting()
+	if _flash_tween and _flash_tween.is_valid():
+		_flash_tween.kill()
+	if _shake_tween and _shake_tween.is_valid():
+		_shake_tween.kill()
+	_apply_stats()
+	_clear_flash()
+	# The death animation leaves the sprite rotated and faded out, and idle_bob only drives
+	# position — so without clearing these by hand a revived unit stands up still lying down
+	# and invisible.
+	sprite.rotation = 0.0
+	sprite.position = Vector2.ZERO
+	sprite.self_modulate = Color.WHITE
+	visuals.position = Vector2.ZERO
+	animation_player.play("idle_bob")
+
+
 func start_fighting() -> void:
-	attack_timer.start()
+	# Rewind to the head of the loop. A beat at 0.0 lands on the first frame, so a fight opens
+	# with a swing rather than a dead beat.
+	_playhead = 0.0
+	_next_beat = 0
+	_fighting = true
 
 
 func stop_fighting() -> void:
-	attack_timer.stop()
+	_fighting = false
 
 
 func take_damage(amount: int) -> void:
@@ -75,9 +135,27 @@ func _apply_stats() -> void:
 	# Team tint rides on modulate; the death animation fades self_modulate, so the
 	# two multiply together instead of one clobbering the other.
 	sprite.modulate = stats.body_color
-	attack_timer.wait_time = stats.attack_interval
+	_pattern = _resolve_pattern()
 	health_component.initialize(stats.max_health)
 	stamina_component.initialize(stats.max_stamina)
+
+
+func _resolve_pattern() -> AttackPattern:
+	if stats.pattern != null:
+		return stats.pattern
+	# No pattern authored: a plain attack_interval means the same thing as a loop that long with
+	# a single beat at its head, so stat blocks predating patterns keep their exact cadence.
+	var steady := AttackPattern.new()
+	steady.duration = stats.attack_interval
+	steady.beats = [0.0]
+	return steady
+
+
+func _speed_scale() -> float:
+	# Out of stamina → the rhythm plays at half speed. Scaling the playhead rather than one
+	# interval means a shaped pattern stretches whole: a rogue exhausted still fights in a 1-2
+	# and a gap, just a slower one. The coming stamina system drives this same number.
+	return 1.0 if stamina_component.has_stamina() else 0.5
 
 
 func _emit_hurt(amount: int) -> void:
@@ -134,15 +212,14 @@ func set_outline(enabled: bool) -> void:
 	sprite.material.set_shader_parameter(&"outline_width", outline_width if enabled else 0.0)
 
 
-func _on_attack_timer_timeout() -> void:
+func _fire_beat() -> void:
 	if not is_alive() or target == null or not target.is_alive():
 		return
 	stamina_component.consume(stats.stamina_cost)
-	# Out of stamina → attack at half rate (double the interval). This is a repeating timer,
-	# so it takes effect from the next cycle: the attack that drains stamina to zero still
-	# fires at normal cadence, and the ones after it are slowed.
-	var rate_factor: float = 2.0 if not stamina_component.has_stamina() else 1.0
-	attack_timer.wait_time = stats.attack_interval * rate_factor
+	# Rewind before playing. play() on the already-playing attack would resume it rather than
+	# restart it, so a burst's second swing would inherit the first's progress, sail past the
+	# strike method track at 0.25s, and land no damage at all.
+	animation_player.stop()
 	animation_player.play("attack")
 	GlobalSignalBus.unit_attacked.emit(self, target)
 

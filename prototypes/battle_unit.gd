@@ -22,6 +22,9 @@ enum Side { HERO, ENEMY }
 ## Texels, not pixels: the gladiator art renders at roughly two-thirds texture scale,
 ## so this reads about half as wide on screen.
 @export var outline_width: float = 12.0
+## Fraction of max health below which this unit is in real danger. Crossing it emits
+## unit_health_low once; healing back above re-arms it, because meat exists.
+@export var low_health_fraction: float = 0.3
 
 var target: BattleUnit
 
@@ -32,6 +35,9 @@ var equipment: EquipmentComponent
 
 var _flash_tween: Tween
 var _shake_tween: Tween
+## Latches unit_health_low so it fires on the crossing rather than on every hit that
+## follows it. Cleared by _apply_stats(), so a revived unit starts armed again.
+var _health_low_latched: bool = false
 
 ## The unit's cadence. Resolved from stats once, so a null pattern costs nothing per frame.
 var _pattern: AttackPattern
@@ -54,6 +60,13 @@ func _ready() -> void:
 	health_component.died.connect(_on_died)
 	health_component.health_changed.connect(_on_health_changed)
 	stamina_component.stamina_changed.connect(_on_stamina_changed)
+	# The components are side-agnostic on purpose, so relaying their signals onto the bus
+	# with this unit attached is this script's job — same contract as the two above.
+	health_component.healed.connect(_on_healed)
+	health_component.heal_wasted.connect(_on_heal_wasted)
+	stamina_component.restored.connect(_on_stamina_restored)
+	stamina_component.depleted.connect(_on_stamina_depleted)
+	stamina_component.recovered.connect(_on_stamina_recovered)
 	animation_player.animation_finished.connect(_on_animation_finished)
 	animation_player.play("idle_bob")
 
@@ -127,10 +140,14 @@ func take_damage(amount: int) -> void:
 	# damage numbers and nameplates tell the truth. A fully absorbed hit still flashes
 	# and shows a 0 — honest feedback that the armor ate it (and wore down for it).
 	var final_amount := amount
+	# Read before absorb_hit, which can break the last armor piece on this very hit — the
+	# blow still landed on armor, so the hit that destroys it is an armored one.
+	var armored: bool = equipment != null and equipment.has_armor()
 	if equipment != null:
 		final_amount = equipment.absorb_hit(amount)
 	health_component.take_damage(final_amount)
 	GlobalSignalBus.unit_hurt.emit(self, final_amount)
+	GlobalSignalBus.unit_damage_resolved.emit(self, final_amount, armored)
 	_emit_hurt(final_amount)
 	if is_alive():
 		_play_hit_react()
@@ -146,6 +163,7 @@ func _apply_stats() -> void:
 	# Team tint rides on modulate; the death animation fades self_modulate, so the
 	# two multiply together instead of one clobbering the other.
 	sprite.modulate = stats.body_color
+	_health_low_latched = false
 	_pattern = _resolve_pattern()
 	health_component.initialize(stats.max_health)
 	stamina_component.initialize(stats.max_stamina)
@@ -176,11 +194,45 @@ func _emit_hurt(amount: int) -> void:
 		GlobalSignalBus.enemy_gladiator_hurt.emit(amount)
 
 
-func _on_health_changed(current_health: int, _max_health: int) -> void:
+func _on_health_changed(current_health: int, max_health: int) -> void:
 	if side == Side.HERO:
 		GlobalSignalBus.hero_gladiator_health_changed.emit(current_health)
 	else:
 		GlobalSignalBus.enemy_gladiator_health_changed.emit(current_health)
+	_update_health_low(current_health, max_health)
+
+
+## Announces the low-health threshold on the way down and re-arms on the way back up, so a
+## gladiator healed out of danger can warn again if it slides back in.
+func _update_health_low(current_health: int, max_health: int) -> void:
+	if max_health <= 0:
+		return
+	var is_low: bool = float(current_health) / float(max_health) <= low_health_fraction
+	if is_low == _health_low_latched:
+		return
+	_health_low_latched = is_low
+	if is_low:
+		GlobalSignalBus.unit_health_low.emit(self)
+
+
+func _on_healed(amount: int) -> void:
+	GlobalSignalBus.unit_healed.emit(self, amount)
+
+
+func _on_heal_wasted() -> void:
+	GlobalSignalBus.unit_heal_wasted.emit(self)
+
+
+func _on_stamina_restored(amount: int) -> void:
+	GlobalSignalBus.unit_stamina_restored.emit(self, amount)
+
+
+func _on_stamina_depleted() -> void:
+	GlobalSignalBus.unit_stamina_depleted.emit(self)
+
+
+func _on_stamina_recovered() -> void:
+	GlobalSignalBus.unit_stamina_recovered.emit(self)
 
 
 func _on_stamina_changed(current_stamina: int, _max_stamina: int) -> void:
@@ -226,6 +278,10 @@ func set_outline(enabled: bool) -> void:
 func _fire_beat() -> void:
 	if not is_alive() or target == null or not target.is_alive():
 		return
+	# Both read before the beat spends anything: exhausted is the state that just scaled the
+	# playhead to half speed, and consuming first could flip it mid-swing.
+	var exhausted: bool = not stamina_component.has_stamina()
+	var armed: bool = equipment != null and equipment.has_weapon()
 	stamina_component.consume(stats.stamina_cost)
 	# Rewind before playing. play() on the already-playing attack would resume it rather than
 	# restart it, so a burst's second swing would inherit the first's progress, sail past the
@@ -234,21 +290,37 @@ func _fire_beat() -> void:
 	animation_player.play(&"attack")
 	animation_player.seek(0.0, true)
 	GlobalSignalBus.unit_attacked.emit(self, target)
+	GlobalSignalBus.unit_swing.emit(self, armed, exhausted)
 
 
 func _on_attack_strike() -> void:
 	# Called by the attack animation's method track at the lunge apex.
 	if not is_alive() or target == null or not target.is_alive():
+		# A swing that reached its apex with nothing left to hit. Only the attacker still
+		# standing counts as a whiff — a corpse mid-animation is not following through.
+		if is_alive():
+			GlobalSignalBus.unit_strike_whiffed.emit(self)
 		return
+	# Read before roll_attack_damage, which charges the weapon's wear and can destroy it.
+	# This swing connected with a sword in hand either way.
+	var armed: bool = equipment != null and equipment.has_weapon()
 	var damage := stats.damage
 	if equipment != null:
 		damage = equipment.roll_attack_damage(stats.damage)
+	# Ahead of take_damage, so the impact reads before whatever the hit resolves into.
+	GlobalSignalBus.unit_strike_landed.emit(self, target, armed)
 	target.take_damage(damage)
 
 
 func _on_died() -> void:
 	stop_fighting()
 	animation_player.play("death")
+	# Side-specific first: the battle controller ends the match off unit_died, and the death
+	# should read ahead of the result.
+	if side == Side.HERO:
+		GlobalSignalBus.hero_gladiator_died.emit()
+	else:
+		GlobalSignalBus.enemy_gladiator_died.emit()
 	GlobalSignalBus.unit_died.emit(self)
 
 

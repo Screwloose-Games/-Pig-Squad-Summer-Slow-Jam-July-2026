@@ -8,6 +8,9 @@ const DAMAGE_NUMBER_SCENE: PackedScene = preload("res://prototypes/damage_number
 const HIT_SOUND: AudioStream = preload("res://common/audio/sfx/ui/UI_CLICK.wav")
 
 var _battle_over: bool = false
+## Latches match_first_blood: unit_hurt fires on every hit, but the moment the staredown
+## becomes a fight happens once. Match-level, so it lives here rather than on a unit.
+var _first_blood_done: bool = false
 
 @onready var hero: BattleUnit = %HeroGladiator
 @onready var enemy: BattleUnit = %EnemyGladiator
@@ -29,6 +32,9 @@ func _ready() -> void:
 
 
 func _on_unit_hurt(unit: Node2D, amount: int) -> void:
+	if not _first_blood_done:
+		_first_blood_done = true
+		GlobalSignalBus.match_first_blood.emit()
 	var number: DamageNumber = DAMAGE_NUMBER_SCENE.instantiate()
 	number.setup(amount)
 	# Position before adding: the number's _ready() reads its own position to seed

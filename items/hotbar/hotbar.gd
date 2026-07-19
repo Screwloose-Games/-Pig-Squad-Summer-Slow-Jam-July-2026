@@ -41,11 +41,19 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _use_slot(index: int) -> void:
+	# No slot would work now, which is a different answer from "that slot is empty" — a
+	# player mashing keys after their gladiator went down deserves to hear the difference.
 	if hero == null or not hero.is_alive():
+		GlobalSignalBus.hotbar_use_failed.emit(GlobalSignalBus.HotbarUseFailure.HERO_DEAD)
 		return
 	var slots := _slots()
-	if index < slots.size():
-		slots[index].use_on(hero)
+	if index >= slots.size() or slots[index].is_empty():
+		GlobalSignalBus.hotbar_use_failed.emit(GlobalSignalBus.HotbarUseFailure.EMPTY_SLOT)
+		return
+	# Ahead of the spend: this is the key press landing, and whatever the item does — the
+	# eating, the drinking — follows it rather than the other way round.
+	GlobalSignalBus.hotbar_slot_used.emit(index + 1)
+	slots[index].use_on(hero)
 
 
 func _slots() -> Array[HotbarSlot]:

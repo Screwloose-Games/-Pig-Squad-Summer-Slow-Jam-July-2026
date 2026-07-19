@@ -105,3 +105,5 @@ func _spawn_one() -> void:
 	if item is RigidBody2D:
 		item.linear_velocity = dir * speed
 		item.angular_velocity = randf_range(-spawn_angular_velocity, spawn_angular_velocity)
+
+	GlobalSignalBus.item_spawned.emit(def)

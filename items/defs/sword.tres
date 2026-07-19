@@ -8,7 +8,6 @@
 script = ExtResource("3_eq")
 slot = 2
 max_durability = 6
-damage = 8
 
 [resource]
 script = ExtResource("1_def")

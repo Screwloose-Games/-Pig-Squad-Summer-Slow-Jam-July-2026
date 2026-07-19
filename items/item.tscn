@@ -1,15 +1,15 @@
 [gd_scene format=3 uid="uid://c7k3n8junkit0"]
 
 [ext_resource type="Script" uid="uid://q86mro2uxxnw" path="res://items/item.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://2w021kdor43i" path="res://items/durability_pie.gd" id="2_buahv"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_1"]
+friction = 0.6
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(48, 48)
 
-[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_1"]
-friction = 0.6
-bounce = 0.0
-
-[node name="Item" type="RigidBody2D"]
+[node name="Item" type="RigidBody2D" unique_id=1008533820]
 collision_layer = 2
 collision_mask = 7
 physics_material_override = SubResource("PhysicsMaterial_1")
@@ -17,26 +17,31 @@ linear_damp = 1.5
 angular_damp = 3.0
 script = ExtResource("1_script")
 
-[node name="Sprite" type="Sprite2D" parent="."]
+[node name="Sprite" type="Sprite2D" parent="." unique_id=1248850888]
 unique_name_in_owner = true
 visible = false
 
-[node name="Placeholder" type="Node2D" parent="."]
+[node name="Placeholder" type="Node2D" parent="." unique_id=2022579849]
 unique_name_in_owner = true
 
-[node name="Square" type="Polygon2D" parent="Placeholder"]
+[node name="Square" type="Polygon2D" parent="Placeholder" unique_id=1871955091]
 color = Color(0.55, 0.55, 0.55, 1)
 polygon = PackedVector2Array(-24, -24, 24, -24, 24, 24, -24, 24)
 
-[node name="Outline" type="Line2D" parent="Placeholder"]
+[node name="Outline" type="Line2D" parent="Placeholder" unique_id=898501073]
 points = PackedVector2Array(-24, -24, 24, -24, 24, 24, -24, 24, -24, -24)
 width = 2.0
 default_color = Color(0.32, 0.32, 0.32, 1)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=5550065]
 unique_name_in_owner = true
 shape = SubResource("RectangleShape2D_1")
 
-[node name="DespawnTimer" type="Timer" parent="."]
+[node name="DespawnTimer" type="Timer" parent="." unique_id=304321774]
 unique_name_in_owner = true
 one_shot = true
+
+[node name="DurabilityPie" type="Node2D" parent="." unique_id=1408941805]
+unique_name_in_owner = true
+visible = false
+script = ExtResource("2_buahv")

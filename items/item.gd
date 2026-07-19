@@ -20,6 +20,12 @@ const PLACEHOLDER_SIZE: Vector2 = Vector2(48, 48)
 ## because _ready() is what stamps it onto the body.
 @export var definition: ItemDef
 
+## Per-instance wear for equipment. ItemDef is one shared resource per type, so wear
+## can never live there. -1 means "not rolled yet": _ready() rolls [1, max]. Equip and
+## unequip transfers set this before add_child(), the same trick the spawner uses for
+## `definition`, so a displaced piece keeps its scars instead of re-rolling.
+@export var durability: int = -1
+
 # Mass difference so carried object can hardly move uncarried object
 @export var heavy_mass: float = 4.0
 @export var carried_mass: float = 0.4
@@ -50,11 +56,14 @@ var is_slotted: bool = false
 @onready var _placeholder: Node2D = %Placeholder
 @onready var _collision_shape: CollisionShape2D = %CollisionShape2D
 @onready var _despawn_timer: Timer = %DespawnTimer
+@onready var _durability_pie: Node2D = %DurabilityPie
 
 
 func _ready() -> void:
 	add_to_group("items")
 	_apply_definition()
+	if is_equipment() and durability < 0:
+		durability = randi_range(1, definition.equipment.max_durability)
 	_apply_heavy()
 	rotation = randf_range(-PI, PI)
 	_despawn_timer.timeout.connect(_on_despawn_timer_timeout)
@@ -110,13 +119,63 @@ func has_effect() -> bool:
 	return definition != null and definition.effect != null
 
 
+func is_equipment() -> bool:
+	return definition != null and definition.equipment != null
+
+
+## Whether releasing this item on `unit` would do anything — drives both the hover
+## outline and the drop. Equipment needs a wearer with an EquipmentComponent, which
+## the enemy deliberately lacks.
+func can_use_on(unit: BattleUnit) -> bool:
+	if is_equipment():
+		return unit.equipment != null
+	return has_effect()
+
+
 ## The single consumption path: drop-on-gladiator and hotbar hotkeys both land here.
-## Freeing the node takes the despawn timer and any blink tween with it.
+## Equipping transfers this item's identity and remaining durability into the unit's
+## component; whatever the new piece displaces pops back into the world. Freeing the
+## node takes the despawn timer and any blink tween with it.
 func use_on(unit: BattleUnit) -> void:
+	if is_equipment():
+		if unit.equipment == null:
+			return
+		var previous: EquipmentComponent.EquippedPiece = unit.equipment.equip(
+			definition, durability
+		)
+		if previous != null:
+			_spawn_unequipped(previous, unit)
+		queue_free()
+		return
 	if not has_effect():
 		return
 	definition.effect.apply(unit)
 	queue_free()
+
+
+## Rebuilds a displaced piece as a live world item with its durability intact, popped
+## out above the unit. Parented next to this item — world drops and hotbar items both
+## live under the ItemField's container, so the piece lands back in the pile either way.
+func _spawn_unequipped(previous: EquipmentComponent.EquippedPiece, unit: BattleUnit) -> void:
+	# load(), not preload(): item.tscn carries this script, and preloading the scene
+	# from inside its own script is a cyclic resource load.
+	var popped: Item = (load("res://items/item.tscn") as PackedScene).instantiate()
+	popped.definition = previous.item_def
+	popped.durability = previous.durability
+	get_parent().add_child(popped)
+	popped.global_position = unit.global_position + Vector2(0.0, -60.0)
+	popped.linear_velocity = Vector2(randf_range(-150.0, 150.0), -400.0)
+	popped.angular_velocity = randf_range(-6.0, 6.0)
+
+
+## Shows/hides the durability pie. Driven by the DragController for the hovered and
+## dragged item; a redraw on show is enough because wear only changes while equipped.
+func set_durability_shown(shown: bool) -> void:
+	var want := shown and is_equipment()
+	if _durability_pie.visible != want:
+		_durability_pie.visible = want
+		if want:
+			_durability_pie.queue_redraw()
 
 
 ## Parks this item in a hotbar slot: frozen in place, upright, and moved to a layer

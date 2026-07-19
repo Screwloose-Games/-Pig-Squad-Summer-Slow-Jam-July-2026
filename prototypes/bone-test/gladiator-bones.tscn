@@ -8,7 +8,8 @@
 [ext_resource type="Texture2D" uid="uid://p34rp1gi06l8" path="res://assets/art/char_test/hero-glad-leg-lower-l.png" id="6_lleg"]
 [ext_resource type="Texture2D" uid="uid://lm28bm4ppygt" path="res://assets/items/sword.png" id="7_sword"]
 [ext_resource type="Script" uid="uid://dls21ud0p5hp4" path="res://prototypes/bone-test/gladiator_bones.gd" id="8_script"]
-[ext_resource type="Shader" path="res://prototypes/hit_flash_group.gdshader" id="9_flash"]
+[ext_resource type="Shader" uid="uid://dfwoiujhwobj" path="res://prototypes/hit_flash_group.gdshader" id="9_flash"]
+[ext_resource type="Texture2D" uid="uid://d1j2a7kykyveu" path="res://assets/items/helmet.png" id="10_slq6t"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_flash"]
 resource_local_to_scene = true
@@ -495,8 +496,8 @@ _data = {
 }
 
 [node name="GladiatorBones" type="CanvasGroup" unique_id=859291756]
-fit_margin = 20.0
 material = SubResource("ShaderMaterial_flash")
+fit_margin = 20.0
 script = ExtResource("8_script")
 
 [node name="Skeleton2D" type="Skeleton2D" parent="." unique_id=1367307250]
@@ -570,7 +571,7 @@ position = Vector2(-34, -75)
 rest = Transform2D(1, 0, 0, 1, -34, -75)
 auto_calculate_length_and_angle = false
 length = 31.9
-bone_angle = 2.7911
+bone_angle = 2.7910998
 
 [node name="UpperArmLSprite" type="Sprite2D" parent="Skeleton2D/Hip/Torso/UpperArmL" unique_id=177812044]
 position = Vector2(-18.5, -4)
@@ -581,7 +582,7 @@ position = Vector2(-30, 11)
 rest = Transform2D(1, 0, 0, 1, -30, 11)
 auto_calculate_length_and_angle = false
 length = 47.8
-bone_angle = 1.9129
+bone_angle = 1.9128999
 
 [node name="LowerArmLSprite" type="Sprite2D" parent="Skeleton2D/Hip/Torso/UpperArmL/LowerArmL" unique_id=1892842272]
 position = Vector2(-10, 27.5)
@@ -592,7 +593,7 @@ position = Vector2(34, -75)
 rest = Transform2D(1, 0, 0, 1, 34, -75)
 auto_calculate_length_and_angle = false
 length = 31.9
-bone_angle = 0.3505
+bone_angle = 0.35049996
 
 [node name="UpperArmRSprite" type="Sprite2D" parent="Skeleton2D/Hip/Torso/UpperArmR" unique_id=1306631898]
 position = Vector2(18.5, -4)
@@ -604,7 +605,7 @@ position = Vector2(30, 11)
 rest = Transform2D(1, 0, 0, 1, 30, 11)
 auto_calculate_length_and_angle = false
 length = 47.8
-bone_angle = 1.2287
+bone_angle = 1.2286999
 
 [node name="SwordProp" type="Sprite2D" parent="Skeleton2D/Hip/Torso/UpperArmR/LowerArmR" unique_id=1117824472]
 position = Vector2(35, 16)
@@ -631,6 +632,12 @@ bone_angle = -1.5707998
 [node name="HeadSprite" type="Sprite2D" parent="Skeleton2D/Hip/Torso/Head" unique_id=911268885]
 position = Vector2(0, -35)
 texture = ExtResource("2_head")
+
+[node name="HelmetProp" type="Sprite2D" parent="Skeleton2D/Hip/Torso/Head" unique_id=1116802988]
+visible = false
+position = Vector2(0, -55)
+scale = Vector2(0.85, 0.85)
+texture = ExtResource("10_slq6t")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=774051930]
 libraries/ = SubResource("AnimationLibrary_main")

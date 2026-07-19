@@ -23,6 +23,10 @@ var _dragged: Item = null
 ## off the moment the drag leaves it, ends, or the item despawns mid-drag.
 var _hover_zone: ItemDropZone = null
 
+## Item currently showing its durability pie: the dragged item while a drag is live,
+## else whatever equipment sits under the idle cursor.
+var _hovered: Item = null
+
 
 # Use _input (not _unhandled_input) so the click is seen before the viewport's
 # physics object picking or any Control can consume it.
@@ -36,11 +40,14 @@ func _input(event: InputEvent) -> void:
 
 func _physics_process(_delta: float) -> void:
 	if _dragged == null:
+		_set_hovered_item(_item_at_point(get_global_mouse_position()))
 		return
 	if not is_instance_valid(_dragged):
 		_dragged = null
 		_set_hover_zone(null)
+		_set_hovered_item(null)
 		return
+	_set_hovered_item(_dragged)
 	var target := get_global_mouse_position()
 	var force := (target - _dragged.global_position) * stiffness - _dragged.linear_velocity * damping
 	force = force.limit_length(max_force)
@@ -49,18 +56,27 @@ func _physics_process(_delta: float) -> void:
 
 
 ## Highlights the unit the drag is currently over, but only when releasing would
-## actually do something: the item must have an effect and the unit must be alive.
+## actually do something: the unit must be alive and able to receive this item
+## (an effect for anyone, equipment only for a unit that can wear it).
 func _update_hover() -> void:
-	var zone: ItemDropZone = null
-	if _dragged.has_effect():
-		zone = _drop_zone_at(get_global_mouse_position())
-		if zone == null:
-			zone = _drop_zone_at(_dragged.global_position)
-		if zone != null:
-			var unit := zone.get_unit()
-			if unit == null or not unit.is_alive():
-				zone = null
+	var zone := _drop_zone_at(get_global_mouse_position())
+	if zone == null:
+		zone = _drop_zone_at(_dragged.global_position)
+	if zone != null:
+		var unit := zone.get_unit()
+		if unit == null or not unit.is_alive() or not _dragged.can_use_on(unit):
+			zone = null
 	_set_hover_zone(zone)
+
+
+func _set_hovered_item(item: Item) -> void:
+	if item == _hovered:
+		return
+	if is_instance_valid(_hovered):
+		_hovered.set_durability_shown(false)
+	_hovered = item
+	if _hovered != null:
+		_hovered.set_durability_shown(true)
 
 
 func _set_hover_zone(zone: ItemDropZone) -> void:
@@ -74,9 +90,17 @@ func _set_hover_zone(zone: ItemDropZone) -> void:
 
 
 func _try_pick() -> void:
+	var best := _item_at_point(get_global_mouse_position())
+	if best != null:
+		_dragged = best
+		_dragged.set_carried(true)
+
+
+## Topmost item under a world point, or null. Serves both pickup and idle hover.
+func _item_at_point(point: Vector2) -> Item:
 	var space := get_world_2d().direct_space_state
 	var params := PhysicsPointQueryParameters2D.new()
-	params.position = get_global_mouse_position()
+	params.position = point
 	params.collide_with_bodies = true
 	# Only items are pickable: without this the query also returns the arena and the
 	# gladiators, and a click on either would waste the 32-hit budget. Slotted items are
@@ -87,7 +111,7 @@ func _try_pick() -> void:
 	)
 	var hits := space.intersect_point(params, 32)
 
-	# Among the pieces under the cursor, grab the one drawn on top (latest sibling).
+	# Among the pieces under the cursor, prefer the one drawn on top (latest sibling).
 	var best: Item = null
 	var best_order := -1
 	for hit in hits:
@@ -95,10 +119,7 @@ func _try_pick() -> void:
 		if collider is Item and collider.get_index() > best_order:
 			best_order = collider.get_index()
 			best = collider
-
-	if best != null:
-		_dragged = best
-		_dragged.set_carried(true)
+	return best
 
 
 func _release() -> void:
@@ -124,13 +145,11 @@ func _release() -> void:
 ## Uses the released item on whichever unit's drop zone sits under the cursor — or under
 ## the item itself, which lags the cursor on its spring and is what the player is watching.
 func _try_drop_on_unit(item: Item) -> void:
-	if not item.has_effect():
-		return
 	for point in [get_global_mouse_position(), item.global_position]:
 		var zone := _drop_zone_at(point)
 		if zone != null:
 			var unit := zone.get_unit()
-			if unit != null and unit.is_alive():
+			if unit != null and unit.is_alive() and item.can_use_on(unit):
 				item.use_on(unit)
 				return
 

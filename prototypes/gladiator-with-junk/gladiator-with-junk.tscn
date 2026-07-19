@@ -11,7 +11,9 @@
 [ext_resource type="PackedScene" uid="uid://b2naspawner00" path="res://items/item_spawner.tscn" id="7_spawner"]
 [ext_resource type="PackedScene" uid="uid://cj8k2nobstcl0" path="res://items/item_obstacle.tscn" id="8_obstacle"]
 [ext_resource type="PackedScene" uid="uid://bi03jgr4chq6o" path="res://items/item_drop_zone.tscn" id="9_dropzone"]
+[ext_resource type="Script" uid="uid://ogbuc3kbhq21" path="res://items/equipment/equipment_component.gd" id="10_cun2v"]
 [ext_resource type="PackedScene" path="res://prototypes/battle_end_overlay.tscn" id="10_endoverlay"]
+[ext_resource type="Script" uid="uid://dmpmu353vv0wy" path="res://items/equipment/equipment_rig_sync.gd" id="11_4buos"]
 [ext_resource type="PackedScene" uid="uid://bnp1tk8qy4wxv" path="res://prototypes/battle_nameplate.tscn" id="11_nmplt"]
 [ext_resource type="PackedScene" uid="uid://blrpgg17yowrc" path="res://items/hotbar/hotbar.tscn" id="12_hotbar"]
 [ext_resource type="Script" uid="uid://epyxhh71y1vi" path="res://globals/sound_manager/music_player_looper.gd" id="20_looper"]
@@ -52,6 +54,12 @@ stats = ExtResource("3_hero")
 position = Vector2(0, 40)
 
 [node name="ItemDropZone" parent="HeroGladiator" unique_id=1652447679 instance=ExtResource("9_dropzone")]
+
+[node name="EquipmentComponent" type="Node" parent="HeroGladiator" unique_id=2103781908]
+script = ExtResource("10_cun2v")
+
+[node name="EquipmentRigSync" type="Node" parent="HeroGladiator" unique_id=718118170]
+script = ExtResource("11_4buos")
 
 [node name="ItemField" parent="." unique_id=1403820477 instance=ExtResource("6_field")]
 

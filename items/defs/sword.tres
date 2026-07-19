@@ -2,6 +2,13 @@
 
 [ext_resource type="Script" uid="uid://cc2rqda1v7756" path="res://items/item_def.gd" id="1_def"]
 [ext_resource type="Texture2D" uid="uid://lm28bm4ppygt" path="res://assets/items/sword.png" id="2_art"]
+[ext_resource type="Script" uid="uid://ml30w2nygwae" path="res://items/equipment/weapon_def.gd" id="3_eq"]
+
+[sub_resource type="Resource" id="Resource_weapon"]
+script = ExtResource("3_eq")
+slot = 2
+max_durability = 6
+damage = 8
 
 [resource]
 script = ExtResource("1_def")
@@ -10,3 +17,4 @@ type = 4
 texture = ExtResource("2_art")
 size = Vector2(41, 60)
 spawn_weight = 0.2
+equipment = SubResource("Resource_weapon")

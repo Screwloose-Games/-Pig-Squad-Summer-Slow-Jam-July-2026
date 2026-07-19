@@ -33,3 +33,7 @@ enum Type { JUNK, HELMET, MEAT, POTION, SWORD }
 
 ## What using this item on a unit does. Null for items that are just clutter.
 @export var effect: ItemEffect
+
+## What wearing this item does. Null for consumables and clutter. On an item carrying
+## both, equipment wins the use_on route — a wearable is a transfer, not a consume.
+@export var equipment: EquipmentDef

@@ -25,6 +25,11 @@ enum Side { HERO, ENEMY }
 
 var target: BattleUnit
 
+## Optional wearable-gear component; an EquipmentComponent mounted under this unit
+## assigns itself here during its own _ready(). Null means the pre-equipment
+## behavior below, which is every enemy and every scene without items.
+var equipment: EquipmentComponent
+
 var _flash_tween: Tween
 var _shake_tween: Tween
 
@@ -118,9 +123,15 @@ func stop_fighting() -> void:
 func take_damage(amount: int) -> void:
 	if not is_alive():
 		return
-	health_component.take_damage(amount)
-	GlobalSignalBus.unit_hurt.emit(self, amount)
-	_emit_hurt(amount)
+	# Armor soaks first, and the mitigated number is what every listener hears, so
+	# damage numbers and nameplates tell the truth. A fully absorbed hit still flashes
+	# and shows a 0 — honest feedback that the armor ate it (and wore down for it).
+	var final_amount := amount
+	if equipment != null:
+		final_amount = equipment.absorb_hit(amount)
+	health_component.take_damage(final_amount)
+	GlobalSignalBus.unit_hurt.emit(self, final_amount)
+	_emit_hurt(final_amount)
 	if is_alive():
 		_play_hit_react()
 
@@ -229,7 +240,10 @@ func _on_attack_strike() -> void:
 	# Called by the attack animation's method track at the lunge apex.
 	if not is_alive() or target == null or not target.is_alive():
 		return
-	target.take_damage(stats.damage)
+	var damage := stats.damage
+	if equipment != null:
+		damage = equipment.roll_attack_damage(stats.damage)
+	target.take_damage(damage)
 
 
 func _on_died() -> void:

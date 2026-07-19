@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="ItemDef" format=3]
+[gd_resource type="Resource" script_class="ItemDef" format=3 uid="uid://b07imddq7tk3r"]
 
 [ext_resource type="Script" uid="uid://cc2rqda1v7756" path="res://items/item_def.gd" id="1_def"]
 [ext_resource type="Texture2D" uid="uid://d1j2a7kykyveu" path="res://assets/items/helmet.png" id="2_art"]
@@ -9,4 +9,4 @@ display_name = "Helmet"
 type = 1
 texture = ExtResource("2_art")
 size = Vector2(60, 56)
-spawn_weight = 1.0
+spawn_weight = 0.2

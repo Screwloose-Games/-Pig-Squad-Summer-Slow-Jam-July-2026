@@ -8,6 +8,15 @@
 [ext_resource type="Texture2D" uid="uid://p34rp1gi06l8" path="res://assets/art/char_test/hero-glad-leg-lower-l.png" id="6_lleg"]
 [ext_resource type="Texture2D" uid="uid://lm28bm4ppygt" path="res://assets/items/sword.png" id="7_sword"]
 [ext_resource type="Script" uid="uid://dls21ud0p5hp4" path="res://prototypes/bone-test/gladiator_bones.gd" id="8_script"]
+[ext_resource type="Shader" path="res://prototypes/hit_flash_group.gdshader" id="9_flash"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_flash"]
+resource_local_to_scene = true
+shader = ExtResource("9_flash")
+shader_parameter/flash_color = Color(1, 1, 1, 1)
+shader_parameter/flash_amount = 0.0
+shader_parameter/outline_color = Color(1, 0.9, 0.3, 1)
+shader_parameter/outline_width = 0.0
 
 [sub_resource type="Animation" id="Animation_reset"]
 resource_name = "RESET"
@@ -127,6 +136,18 @@ tracks/9/path = NodePath("Skeleton2D/Hip/Torso/UpperArmR/LowerArmR:rotation")
 tracks/9/interp = 1
 tracks/9/loop_wrap = true
 tracks/9/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/10/type = "value"
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/path = NodePath("Skeleton2D/Hip/Torso/UpperArmL/LowerArmL:rotation")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
@@ -473,10 +494,13 @@ _data = {
 &"strafe_right": SubResource("Animation_strafe_right")
 }
 
-[node name="GladiatorBones" type="Node2D" unique_id=859291756]
+[node name="GladiatorBones" type="CanvasGroup" unique_id=859291756]
+fit_margin = 20.0
+material = SubResource("ShaderMaterial_flash")
 script = ExtResource("8_script")
 
 [node name="Skeleton2D" type="Skeleton2D" parent="." unique_id=1367307250]
+position = Vector2(0, 34)
 
 [node name="Hip" type="Bone2D" parent="Skeleton2D" unique_id=1102667941]
 rest = Transform2D(1, 0, 0, 1, 0, 0)
@@ -610,4 +634,3 @@ texture = ExtResource("2_head")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=774051930]
 libraries/ = SubResource("AnimationLibrary_main")
-autoplay = &"idle"

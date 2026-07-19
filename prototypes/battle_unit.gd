@@ -16,8 +16,8 @@ enum Side { HERO, ENEMY }
 @export var side: BattleUnit.Side = BattleUnit.Side.HERO
 @export var facing_left: bool = false
 @export var flash_duration: float = 0.08
-@export var shake_amplitude: float = 5.0
-@export var shake_duration: float = 0.15
+@export var shake_amplitude: float = 2.5
+@export var shake_duration: float = 0.10
 ## Thickness (in texels) of the drop-target outline set_outline draws around the sprite.
 ## Texels, not pixels: the gladiator art renders at roughly two-thirds texture scale,
 ## so this reads about half as wide on screen.
@@ -37,7 +37,7 @@ var _playhead: float = 0.0
 var _next_beat: int = 0
 
 @onready var visuals: Node2D = %Visuals
-@onready var sprite: AnimatedSprite2D = %Sprite
+@onready var sprite: Node2D = %Sprite
 @onready var health_component: HealthComponent = %HealthComponent
 @onready var stamina_component: StaminaComponent = %StaminaComponent
 @onready var animation_player: AnimationPlayer = %AnimationPlayer
@@ -218,9 +218,10 @@ func _fire_beat() -> void:
 	stamina_component.consume(stats.stamina_cost)
 	# Rewind before playing. play() on the already-playing attack would resume it rather than
 	# restart it, so a burst's second swing would inherit the first's progress, sail past the
-	# strike method track at 0.25s, and land no damage at all.
-	animation_player.stop()
-	animation_player.play("attack")
+	# strike method track, and land no damage at all. seek() rather than stop()+play() so the
+	# pose snapshot survives and cross-fade blend times still apply.
+	animation_player.play(&"attack")
+	animation_player.seek(0.0, true)
 	GlobalSignalBus.unit_attacked.emit(self, target)
 
 

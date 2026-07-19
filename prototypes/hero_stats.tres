@@ -6,6 +6,9 @@
 script = ExtResource("1_stats")
 display_name = "Hero"
 level = 5
+max_health = 200
 max_stamina = 120
 damage = 8
 attack_interval = 1.2
+stamina_cost = 6
+body_color = Color(1, 1, 1, 1)

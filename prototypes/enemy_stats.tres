@@ -6,9 +6,9 @@
 script = ExtResource("1_stats")
 display_name = "Enemy"
 level = 6
-max_health = 120
+max_health = 240
 max_stamina = 150
 damage = 8
-attack_interval = 0.8
+attack_interval = 1.3
 stamina_cost = 8
 body_color = Color(0.996, 0.682, 0.203, 1)

@@ -3,8 +3,10 @@ name: Check Import Files
 # Catch assets that were committed (or changed) without their Godot `.import` sidecar.
 # When that happens, the next contributor to open the editor silently regenerates the
 # `.import` files locally, gets surprised by dirty working-tree changes, and divergent
-# copies later cause merge conflicts. This job opens the project headlessly and fails if
-# importing produces any new or modified `.import` files.
+# copies later cause merge conflicts. This job opens the project headlessly, and if
+# importing produces new/modified `.import` files it commits them straight back to the
+# PR branch (for same-repo PRs). For fork PRs -- where the token is read-only and can't
+# push -- it instead uploads the files as an artifact and fails the check.
 on:
   pull_request:
     paths:
@@ -32,8 +34,8 @@ on:
       - '.github/workflows/check-import-files.yml'
 
 permissions:
-  pull-requests: write
-  contents: read
+  contents: write # push generated .import files back to the PR branch
+  pull-requests: write # sticky PR comment
 
 jobs:
   check-import:
@@ -45,10 +47,15 @@ jobs:
       run:
         shell: bash # need bash for `-z` / `mapfile -d ''` parsing below
     steps:
-      - name: Checkout
+      # Check out the PR's HEAD branch (not the default merge ref) with persisted
+      # credentials, so we can push generated .import files back to it. For fork PRs
+      # this still reads the fork's branch; the push simply won't be attempted.
+      - name: Checkout PR head branch
         uses: actions/checkout@v4
         with:
-          fetch-depth: 1
+          ref: ${{ github.event.pull_request.head.ref }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          fetch-depth: 0
 
       # Avoid git "dubious ownership" inside the container.
       - name: Mark workspace safe for git
@@ -65,60 +72,114 @@ jobs:
       # music files under common/audio/music have these).
       - name: Detect new or modified .import files
         id: check
+        env:
+          IS_FORK: ${{ github.event.pull_request.head.repo.full_name != github.repository }}
         run: |
           mapfile -d '' entries < <(git status --porcelain -z -- '*.import')
-          new_files=(); modified_files=()
+          changed=()
           for e in "${entries[@]}"; do
             [ -z "$e" ] && continue
-            code="${e:0:2}"; path="${e:3}"
-            if [ "$code" = "??" ]; then new_files+=("$path"); else modified_files+=("$path"); fi
+            changed+=("${e:3}")
           done
 
-          if [ ${#new_files[@]} -eq 0 ] && [ ${#modified_files[@]} -eq 0 ]; then
+          if [ ${#changed[@]} -eq 0 ]; then
             echo "has_changes=false" >> "$GITHUB_OUTPUT"
-            {
-              echo "report<<EOF"
-              echo "✅ All imported assets have up-to-date \`.import\` files. Nothing to commit."
-              echo "EOF"
-            } >> "$GITHUB_OUTPUT"
           else
             echo "has_changes=true" >> "$GITHUB_OUTPUT"
-            {
-              echo "report<<EOF"
-              echo "❌ Importing the project produced \`.import\` changes that are **not committed**."
-              echo "Open the project in **Godot 4.7**, then commit the generated/updated \`.import\` files."
-              echo ""
-              if [ ${#new_files[@]} -gt 0 ]; then
-                echo "**Missing (new) \`.import\` files — asset committed without its sidecar:**"
-                for f in "${new_files[@]}"; do echo "- \`$f\`"; done
-                echo ""
-              fi
-              if [ ${#modified_files[@]} -gt 0 ]; then
-                echo "**Stale (modified) \`.import\` files — asset changed but sidecar not updated:**"
-                for f in "${modified_files[@]}"; do echo "- \`$f\`"; done
-              fi
-              echo "EOF"
-            } >> "$GITHUB_OUTPUT"
+            # Fork PRs can't be pushed to, so stage the files (preserving paths) for an
+            # artifact the author can download and commit. Kept out of the tracked tree
+            # on same-repo PRs so the auto-commit step never re-adds these staged copies.
+            if [ "$IS_FORK" = "true" ]; then
+              rm -rf import-fixes && mkdir -p import-fixes
+              for f in "${changed[@]}"; do cp --parents "$f" import-fixes/; done
+            fi
           fi
 
-      # Always post/update one sticky comment (unless the run was cancelled).
-      - name: Comment PR
-        if: ${{ !cancelled() }}
+          # Markdown bullet list of the affected files, reused by the comment steps.
+          {
+            echo "files<<EOF"
+            for f in "${changed[@]}"; do echo "- \`$f\`"; done
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      # SAME-REPO PR: commit the generated/updated sidecars straight to the PR branch.
+      # This push re-triggers the workflow once; the re-run finds them committed, passes,
+      # and does not push again (no loop).
+      - name: Commit generated .import files to the PR branch
+        if: steps.check.outputs.has_changes == 'true' && github.event.pull_request.head.repo.full_name == github.repository
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: |
+            Add generated Godot .import files
+
+            Auto-generated by the Check Import Files workflow: these assets were
+            committed without their .import sidecars.
+          file_pattern: '*.import'
+          commit_user_name: github-actions[bot]
+          commit_user_email: 41898282+github-actions[bot]@users.noreply.github.com
+
+      # FORK PR: can't push, so make the files downloadable instead.
+      - name: Upload generated .import files (fork fallback)
+        if: steps.check.outputs.has_changes == 'true' && github.event.pull_request.head.repo.full_name != github.repository
+        uses: actions/upload-artifact@v4
+        with:
+          name: missing-import-files
+          path: import-fixes/**
+          if-no-files-found: warn
+
+      # --- Sticky comment (all three share comment-tag, so they update one comment) ---
+
+      - name: Comment — up to date
+        if: ${{ !cancelled() && steps.check.outputs.has_changes == 'false' }}
         uses: thollander/actions-comment-pull-request@v3
         with:
           comment-tag: import-file-check
           github-token: ${{ secrets.GITHUB_TOKEN }}
           message: |
             # Godot `.import` check 📦
-            ${{ steps.check.outputs.report }}
+            ✅ All imported assets have up-to-date `.import` files. Nothing to commit.
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           GITHUB_ISSUE_NUMBER: ${{ github.event.pull_request.number }}
 
-      # Fail the check itself (separate from commenting, so the comment always posts first).
-      - name: Fail if .import files are missing or stale
-        if: steps.check.outputs.has_changes == 'true'
+      - name: Comment — committed the fix
+        if: ${{ !cancelled() && steps.check.outputs.has_changes == 'true' && github.event.pull_request.head.repo.full_name == github.repository }}
+        uses: thollander/actions-comment-pull-request@v3
+        with:
+          comment-tag: import-file-check
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          message: |
+            # Godot `.import` check 📦
+            ⚠️ Some assets were committed without their `.import` sidecars. I generated them and **pushed them to this branch** for you:
+            ${{ steps.check.outputs.files }}
+            **`git pull` before you push again** so you don't hit a non-fast-forward.
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_ISSUE_NUMBER: ${{ github.event.pull_request.number }}
+
+      - name: Comment — fork, commit manually
+        if: ${{ !cancelled() && steps.check.outputs.has_changes == 'true' && github.event.pull_request.head.repo.full_name != github.repository }}
+        continue-on-error: true # fork PR tokens are read-only; don't hard-fail if the comment can't post
+        uses: thollander/actions-comment-pull-request@v3
+        with:
+          comment-tag: import-file-check
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          message: |
+            # Godot `.import` check 📦
+            ❌ These assets are missing their `.import` sidecars, and I can't push to a fork branch:
+            ${{ steps.check.outputs.files }}
+            Download the **missing-import-files** artifact from this run and drop the files into your working tree at the same paths, then commit them — or run `godot --headless --import` locally and commit the generated `.import` files.
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_ISSUE_NUMBER: ${{ github.event.pull_request.number }}
+
+      # Only fail when we couldn't auto-fix it (fork PR). Same-repo PRs are resolved by the
+      # push above, whose re-run reports green.
+      - name: Fail if .import files could not be auto-committed
+        if: steps.check.outputs.has_changes == 'true' && github.event.pull_request.head.repo.full_name != github.repository
         run: |
-          echo "New or modified .import files detected. See the PR comment for the list."
+          echo "Missing .import files on a fork PR; uploaded as an artifact. See the PR comment."
           exit 1

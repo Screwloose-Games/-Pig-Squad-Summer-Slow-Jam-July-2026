@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="ItemDef" format=3]
+[gd_resource type="Resource" script_class="ItemDef" format=3 uid="uid://b18mlpxh8d7h3"]
 
 [ext_resource type="Script" uid="uid://cc2rqda1v7756" path="res://items/item_def.gd" id="1_def"]
 [ext_resource type="Texture2D" uid="uid://lm28bm4ppygt" path="res://assets/items/sword.png" id="2_art"]
@@ -9,4 +9,4 @@ display_name = "Sword"
 type = 4
 texture = ExtResource("2_art")
 size = Vector2(41, 60)
-spawn_weight = 1.0
+spawn_weight = 0.2

@@ -7,7 +7,7 @@ env:
   BUTLER_API_KEY: ${{ secrets.ITCHIO_API_KEY }} # Repository Settings -> Secrets and variables -> Actions -> New repository secret
   ITCHIO_USERNAME: ${{ secrets.ITCHIO_USERNAME }}
   PROJECT_NAME: "tiny-creature" # See README.md about project, channel, and export file naming conventions
-  GODOT_VERSION: 4.4.1
+  GODOT_VERSION: 4.7.1
 
 jobs:
   Build:

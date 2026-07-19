@@ -1,17 +1,33 @@
 [gd_scene format=3 uid="uid://fyac1lehgvt4"]
 
-[ext_resource type="Script" path="res://items/item_arena.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://cf1uql5jgesyk" path="res://items/item_arena.gd" id="1_script"]
 
-[node name="ItemArena" type="StaticBody2D"]
-collision_layer = 1
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_8rcv1"]
+size = Vector2(1300, 40)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_0s1it"]
+size = Vector2(40, 660)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_sc1tt"]
+size = Vector2(40, 660)
+
+[node name="ItemArena" type="StaticBody2D" unique_id=19349471]
 collision_mask = 0
 script = ExtResource("1_script")
 
-[node name="Floor" type="CollisionShape2D" parent="."]
+[node name="Floor" type="CollisionShape2D" parent="." unique_id=713497959]
 unique_name_in_owner = true
+position = Vector2(0, 350)
+shape = SubResource("RectangleShape2D_8rcv1")
 
-[node name="LeftWall" type="CollisionShape2D" parent="."]
+[node name="LeftWall" type="CollisionShape2D" parent="." unique_id=487348506]
 unique_name_in_owner = true
+position = Vector2(-630, 0)
+shape = SubResource("RectangleShape2D_0s1it")
+disabled = true
 
-[node name="RightWall" type="CollisionShape2D" parent="."]
+[node name="RightWall" type="CollisionShape2D" parent="." unique_id=801535226]
 unique_name_in_owner = true
+position = Vector2(630, 0)
+shape = SubResource("RectangleShape2D_sc1tt")
+disabled = true

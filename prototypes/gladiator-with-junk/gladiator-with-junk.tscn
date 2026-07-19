@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://cwnvc8oiuj1tv"]
 
 [ext_resource type="Script" uid="uid://d30nwhwcvk2ik" path="res://prototypes/gladiator-with-junk/gladiator_with_junk.gd" id="1_script"]
+[ext_resource type="PackedScene" uid="uid://c1herogladrig" path="res://prototypes/hero-gladiator/hero_gladiator.tscn" id="2_hero_unit"]
 [ext_resource type="Texture2D" uid="uid://kqn1j8eajpw6" path="res://assets/solid_background.png" id="2_uc0us"]
 [ext_resource type="PackedScene" uid="uid://d35tn8qf7fgxh" path="res://prototypes/battle_unit.tscn" id="2_unit"]
 [ext_resource type="Resource" uid="uid://b2endwgom7oms" path="res://prototypes/hero_stats.tres" id="3_hero"]
@@ -41,7 +42,7 @@ stats = ExtResource("4_enemy")
 side = 1
 facing_left = true
 
-[node name="HeroGladiator" parent="." unique_id=326871095 instance=ExtResource("2_unit")]
+[node name="HeroGladiator" parent="." unique_id=326871095 instance=ExtResource("2_hero_unit")]
 unique_name_in_owner = true
 position = Vector2(330, 540)
 scale = Vector2(1.5, 1.5)
@@ -56,6 +57,8 @@ position = Vector2(0, 40)
 
 [node name="Spawner_L" parent="ItemField" unique_id=39242015 instance=ExtResource("7_spawner")]
 position = Vector2(46, 178)
+spawn_interval = 0.5
+interval_jitter = 0.7
 speed_min = 1000.0
 speed_max = 1200.0
 angle_min_deg = -35.0
@@ -63,6 +66,8 @@ angle_max_deg = -15.0
 
 [node name="Spawner_R" parent="ItemField" unique_id=1284137633 instance=ExtResource("7_spawner")]
 position = Vector2(1234, 170)
+spawn_interval = 0.5
+interval_jitter = 0.7
 speed_min = 1000.0
 speed_max = 1200.0
 angle_min_deg = -35.0

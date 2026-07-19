@@ -5,7 +5,7 @@ on:
 
 # on: workflow_dispatch
 env:
-  GODOT_VERSION: 4.4.1
+  GODOT_VERSION: 4.7.1
   ITCH_USER: ${{ vars.ITCH_USER }}
   ITCH_GAME: ${{ vars.ITCH_GAME }}
   BUTLER_API_KEY: ${{ secrets.BUTLER_CREDENTIALS }}

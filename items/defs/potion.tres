@@ -13,4 +13,5 @@ display_name = "Potion"
 type = 3
 texture = ExtResource("2_art")
 size = Vector2(30, 51)
+spawn_weight = 0.5
 effect = SubResource("Resource_stamina")

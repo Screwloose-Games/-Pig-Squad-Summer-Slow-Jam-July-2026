@@ -1,7 +1,7 @@
 name: "Build Godot Game"
 
 env:
-  GODOT_VERSION: 4.4.1
+  GODOT_VERSION: 4.7.1
 
 on:
   workflow_dispatch:
@@ -20,7 +20,7 @@ jobs:
     permissions:
       contents: write
     container:
-      image: barichello/godot-ci:4.4.1
+      image: barichello/godot-ci:4.7.1
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -57,7 +57,7 @@ jobs:
       contents: write
 
     container:
-      image: barichello/godot-ci:4.4.1
+      image: barichello/godot-ci:4.7.1
 
     steps:
       - name: Checkout
@@ -87,7 +87,7 @@ jobs:
       contents: write
 
     container:
-      image: barichello/godot-ci:4.4.1
+      image: barichello/godot-ci:4.7.1
 
     steps:
       - name: Checkout

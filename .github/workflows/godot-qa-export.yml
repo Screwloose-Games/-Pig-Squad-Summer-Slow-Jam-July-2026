@@ -9,7 +9,7 @@ on:
 #   workflow_dispatch:
 
 env:
-  GODOT_VERSION: 4.4.1
+  GODOT_VERSION: 4.7.1
   EXPORT_NAME: godot_test_framework
   GODOT_TEMPLATES_DIRECTORY_SOURCE: /root/.local/share/godot/export_templates
   GODOT_TEMPLATES_DIRECTORY_DESTINATION: ~/.local/share/godot/export_templates
@@ -23,7 +23,7 @@ jobs:
     name: Web Export
     runs-on: ubuntu-latest
     container:
-      image: barichello/godot-ci:4.4.1
+      image: barichello/godot-ci:4.7.1
     steps:
       - name: Checkout
         uses: actions/checkout@v4

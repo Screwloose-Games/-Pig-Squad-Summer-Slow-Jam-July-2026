@@ -1,0 +1,124 @@
+name: Check Import Files
+
+# Catch assets that were committed (or changed) without their Godot `.import` sidecar.
+# When that happens, the next contributor to open the editor silently regenerates the
+# `.import` files locally, gets surprised by dirty working-tree changes, and divergent
+# copies later cause merge conflicts. This job opens the project headlessly and fails if
+# importing produces any new or modified `.import` files.
+on:
+  pull_request:
+    paths:
+      - '**/*.png'
+      - '**/*.jpg'
+      - '**/*.jpeg'
+      - '**/*.webp'
+      - '**/*.bmp'
+      - '**/*.tga'
+      - '**/*.svg'
+      - '**/*.exr'
+      - '**/*.wav'
+      - '**/*.ogg'
+      - '**/*.mp3'
+      - '**/*.ttf'
+      - '**/*.otf'
+      - '**/*.woff'
+      - '**/*.woff2'
+      - '**/*.gltf'
+      - '**/*.glb'
+      - '**/*.obj'
+      - '**/*.fbx'
+      - '**/*.dae'
+      - '**/*.import' # editing/removing a sidecar re-runs the check
+      - '.github/workflows/check-import-files.yml'
+
+permissions:
+  pull-requests: write
+  contents: read
+
+jobs:
+  check-import:
+    name: Check for missing/stale .import files
+    runs-on: ubuntu-latest
+    container:
+      image: barichello/godot-ci:4.7.1 # matches project.godot's declared Godot 4.7
+    defaults:
+      run:
+        shell: bash # need bash for `-z` / `mapfile -d ''` parsing below
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      # Avoid git "dubious ownership" inside the container.
+      - name: Mark workspace safe for git
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
+      # Open the project headlessly. NOTE: deliberately do NOT run resize_large_pngs.py
+      # (it rewrites PNG sources in place and would cause spurious .import churn), and do
+      # NOT restore the .import/.godot cache -- a clean import is what exposes missing sidecars.
+      - name: Import assets (headless)
+        run: timeout 300s godot --headless --verbose --import
+
+      # New (untracked) or modified *.import files == a contributor committed/changed an asset
+      # without its up-to-date sidecar. -z + mapfile handles filenames with spaces/()/! (the
+      # music files under common/audio/music have these).
+      - name: Detect new or modified .import files
+        id: check
+        run: |
+          mapfile -d '' entries < <(git status --porcelain -z -- '*.import')
+          new_files=(); modified_files=()
+          for e in "${entries[@]}"; do
+            [ -z "$e" ] && continue
+            code="${e:0:2}"; path="${e:3}"
+            if [ "$code" = "??" ]; then new_files+=("$path"); else modified_files+=("$path"); fi
+          done
+
+          if [ ${#new_files[@]} -eq 0 ] && [ ${#modified_files[@]} -eq 0 ]; then
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+            {
+              echo "report<<EOF"
+              echo "✅ All imported assets have up-to-date \`.import\` files. Nothing to commit."
+              echo "EOF"
+            } >> "$GITHUB_OUTPUT"
+          else
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
+            {
+              echo "report<<EOF"
+              echo "❌ Importing the project produced \`.import\` changes that are **not committed**."
+              echo "Open the project in **Godot 4.7**, then commit the generated/updated \`.import\` files."
+              echo ""
+              if [ ${#new_files[@]} -gt 0 ]; then
+                echo "**Missing (new) \`.import\` files — asset committed without its sidecar:**"
+                for f in "${new_files[@]}"; do echo "- \`$f\`"; done
+                echo ""
+              fi
+              if [ ${#modified_files[@]} -gt 0 ]; then
+                echo "**Stale (modified) \`.import\` files — asset changed but sidecar not updated:**"
+                for f in "${modified_files[@]}"; do echo "- \`$f\`"; done
+              fi
+              echo "EOF"
+            } >> "$GITHUB_OUTPUT"
+          fi
+
+      # Always post/update one sticky comment (unless the run was cancelled).
+      - name: Comment PR
+        if: ${{ !cancelled() }}
+        uses: thollander/actions-comment-pull-request@v3
+        with:
+          comment-tag: import-file-check
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          message: |
+            # Godot `.import` check 📦
+            ${{ steps.check.outputs.report }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_ISSUE_NUMBER: ${{ github.event.pull_request.number }}
+
+      # Fail the check itself (separate from commenting, so the comment always posts first).
+      - name: Fail if .import files are missing or stale
+        if: steps.check.outputs.has_changes == 'true'
+        run: |
+          echo "New or modified .import files detected. See the PR comment for the list."
+          exit 1

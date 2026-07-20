@@ -53,8 +53,16 @@ signal hero_gladiator_died
 signal enemy_gladiator_died
 
 # match
+## Both gladiators are about to start swinging. Narrower than level_started, which any
+## scene emits when it loads — level_01 has no fight in it, so a listener wired to that
+## one fires on the wrong screens. Anything that belongs to the fight itself, rather than
+## to the scene the fight happens in, listens here.
+signal match_started
 ## The first damage of the match, once. Every hit after it is just unit_hurt.
 signal match_first_blood
+## A match is decided: every combatant on one team is down. Same moment as battle_ended,
+## named for the match rather than the battle, and the one GladiatorMatch owns.
+signal gladiator_match_ended(hero_won: bool)
 ## The result panel is actually on screen — later than battle_ended, and never emitted for
 ## a reveal that was cancelled while it waited.
 signal match_result_revealed(hero_won: bool)

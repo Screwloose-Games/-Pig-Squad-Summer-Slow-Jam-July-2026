@@ -11,9 +11,11 @@
 [ext_resource type="PackedScene" uid="uid://cj8k2nobstcl0" path="res://items/item_obstacle.tscn" id="8_obstacle"]
 [ext_resource type="PackedScene" path="res://prototypes/battle_end_overlay.tscn" id="10_endoverlay"]
 [ext_resource type="PackedScene" uid="uid://bnp1tk8qy4wxv" path="res://prototypes/battle_nameplate.tscn" id="11_nmplt"]
-[ext_resource type="Resource" path="res://prototypes/variants/rogue.tres" id="12_rogue"]
-[ext_resource type="Resource" path="res://prototypes/variants/gladiator.tres" id="13_gladiator"]
-[ext_resource type="Resource" path="res://prototypes/variants/slugger.tres" id="14_slugger"]
+[ext_resource type="Resource" uid="uid://cdfwv2uh25r5r" path="res://prototypes/variants/rogue.tres" id="12_rogue"]
+[ext_resource type="Resource" uid="uid://dd2gm77rje4uh" path="res://prototypes/variants/gladiator.tres" id="13_gladiator"]
+[ext_resource type="Resource" uid="uid://l7gr0vgm6ek7" path="res://prototypes/variants/slugger.tres" id="14_slugger"]
+[ext_resource type="Script" uid="uid://csgk6fnmwcodq" path="res://prototypes/gladiator_match.gd" id="15_match"]
+[ext_resource type="PackedScene" uid="uid://b8b6q7g4bsaw5" path="res://common/ui/pause_menu/pause_menu.tscn" id="19_xo1u6"]
 [ext_resource type="Script" uid="uid://epyxhh71y1vi" path="res://globals/sound_manager/music_player_looper.gd" id="20_looper"]
 [ext_resource type="AudioStream" uid="uid://ca5j6yetesg3q" path="res://common/audio/music/I've Got Your Back! (Intro).ogg" id="21_mintro"]
 [ext_resource type="AudioStream" uid="uid://b3we3vcmsdk2i" path="res://common/audio/music/I've Got Your Back! (Main Loop).ogg" id="22_mloop"]
@@ -54,14 +56,14 @@ position = Vector2(0, 40)
 
 [node name="ItemField" parent="." unique_id=1644526762 instance=ExtResource("6_field")]
 
-[node name="Spawner_L" parent="ItemField/Spawners" instance=ExtResource("7_spawner")]
+[node name="Spawner_L" parent="ItemField/Spawners" index="0" unique_id=1314647286 instance=ExtResource("7_spawner")]
 position = Vector2(60, 560)
 speed_min = 400.0
 speed_max = 650.0
 angle_min_deg = -35.0
 angle_max_deg = -15.0
 
-[node name="Spawner_R" parent="ItemField/Spawners" instance=ExtResource("7_spawner")]
+[node name="Spawner_R" parent="ItemField/Spawners" index="1" unique_id=587738121 instance=ExtResource("7_spawner")]
 position = Vector2(1220, 560)
 speed_min = 400.0
 speed_max = 650.0
@@ -71,6 +73,13 @@ flip_horizontal = true
 
 [node name="DamageNumbers" type="Node2D" parent="." unique_id=828385212]
 unique_name_in_owner = true
+
+[node name="GladiatorMatch" type="Node" parent="." unique_id=1099876738 node_paths=PackedStringArray("hero_team", "enemy_team")]
+unique_name_in_owner = true
+script = ExtResource("15_match")
+hero_team = [NodePath("../HeroGladiator")]
+enemy_team = [NodePath("../EnemyGladiator")]
+metadata/_custom_type_script = "uid://csgk6fnmwcodq"
 
 [node name="UI" type="CanvasLayer" parent="." unique_id=270499458]
 
@@ -84,16 +93,18 @@ unique_name_in_owner = true
 [node name="BattleEndOverlay" parent="." unique_id=1656853328 instance=ExtResource("10_endoverlay")]
 unique_name_in_owner = true
 
-[node name="MusicPlayerLooper" type="Node" parent="." node_paths=PackedStringArray("intro_player", "loop_player")]
+[node name="MusicPlayerLooper" type="Node" parent="." unique_id=1231675663 node_paths=PackedStringArray("intro_player", "loop_player")]
 script = ExtResource("20_looper")
 intro_player = NodePath("MusicIntroAudioStreamPlayer")
 loop_player = NodePath("MusicLoopAudioStreamPlayer")
 metadata/_custom_type_script = "uid://epyxhh71y1vi"
 
-[node name="MusicIntroAudioStreamPlayer" type="AudioStreamPlayer" parent="MusicPlayerLooper"]
+[node name="MusicIntroAudioStreamPlayer" type="AudioStreamPlayer" parent="MusicPlayerLooper" unique_id=124650516]
 stream = ExtResource("21_mintro")
 
-[node name="MusicLoopAudioStreamPlayer" type="AudioStreamPlayer" parent="MusicPlayerLooper"]
+[node name="MusicLoopAudioStreamPlayer" type="AudioStreamPlayer" parent="MusicPlayerLooper" unique_id=1861718804]
 stream = ExtResource("22_mloop")
+
+[node name="PauseMenu" parent="." unique_id=2125353882 instance=ExtResource("19_xo1u6")]
 
 [editable path="ItemField"]

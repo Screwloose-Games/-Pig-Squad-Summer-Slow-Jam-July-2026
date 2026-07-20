@@ -4,15 +4,12 @@ env:
   GODOT_VERSION: 4.7.1
 
 on:
+  # Tagging a release (e.g. `git tag v1.2.0 && git push origin v1.2.0`, or
+  # publishing a GitHub Release, which pushes the tag) fires the build.
+  push:
+    tags:
+      - "v*"
   workflow_dispatch:
-  # push:
-  #   branches:
-  #     - main
-
-# on:
-#   push:
-#     tags:
-#       - "v*"
 
 jobs:
   web:

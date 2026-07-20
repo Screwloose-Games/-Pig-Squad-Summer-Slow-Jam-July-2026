@@ -1,9 +1,58 @@
-[gd_scene format=3 uid="uid://c54af0wl0auwx"]
+[gd_scene load_steps=54 format=3 uid="uid://c54af0wl0auwx"]
 
 [ext_resource type="Script" uid="uid://b1mijyjkslhfu" path="res://globals/sound_manager/SoundManager.gd" id="1_0wbjb"]
 [ext_resource type="Script" uid="uid://dd8uxrmtutff5" path="res://globals/sound_manager/sound_effect.gd" id="2_t4w6u"]
 [ext_resource type="AudioStream" uid="uid://camm2n4s878j" path="res://common/audio/sfx/ui/aud_ui_navigate.wav" id="3_57f3y"]
 [ext_resource type="AudioStream" uid="uid://cjqacppbmh2tk" path="res://common/audio/sfx/ui/aud_ui_open.wav" id="4_ymhco"]
+[ext_resource type="AudioStream" uid="uid://bjoc3r8lndtq0" path="res://assets/audio/sfx/sfx_match_started.wav" id="5_sfx_match_started"]
+[ext_resource type="AudioStream" uid="uid://5lbjnfx10ej2" path="res://assets/audio/sfx/sfx_match_first_blood.wav" id="6_sfx_match_first_blood"]
+[ext_resource type="AudioStream" uid="uid://o25w8p1wuc3g" path="res://assets/audio/sfx/sfx_match_ended_hero_victory.wav" id="7_sfx_match_ended_hero_victory"]
+[ext_resource type="AudioStream" uid="uid://7fgge7vyny1v" path="res://assets/audio/sfx/sfx_match_ended_hero_defeat.wav" id="8_sfx_match_ended_hero_defeat"]
+[ext_resource type="AudioStream" uid="uid://08gqpnykxouk" path="res://assets/audio/sfx/sfx_match_result_revealed.wav" id="9_sfx_match_result_revealed"]
+[ext_resource type="AudioStream" uid="uid://bbsb4sefa3cgk" path="res://assets/audio/sfx/sfx_gladiator_swing_armed.wav" id="10_sfx_gladiator_swing_armed"]
+[ext_resource type="AudioStream" uid="uid://blx7eu71pmu5u" path="res://assets/audio/sfx/sfx_gladiator_swing_unarmed.wav" id="11_sfx_gladiator_swing_unarmed"]
+[ext_resource type="AudioStream" uid="uid://b75nsbfmrybc3" path="res://assets/audio/sfx/sfx_gladiator_swing_exhausted.wav" id="12_sfx_gladiator_swing_exhausted"]
+[ext_resource type="AudioStream" uid="uid://beymsykfgcx35" path="res://assets/audio/sfx/sfx_gladiator_swing_whiffs.wav" id="13_sfx_gladiator_swing_whiffs"]
+[ext_resource type="AudioStream" uid="uid://cenwnpqb6i11m" path="res://assets/audio/sfx/sfx_gladiator_strike_lands.wav" id="14_sfx_gladiator_strike_lands"]
+[ext_resource type="AudioStream" uid="uid://cc37au61svpgr" path="res://assets/audio/sfx/sfx_gladiator_hit_by_sword.wav" id="15_sfx_gladiator_hit_by_sword"]
+[ext_resource type="AudioStream" uid="uid://dbg7606o4b1l4" path="res://assets/audio/sfx/sfx_gladiator_hit_by_fist.wav" id="16_sfx_gladiator_hit_by_fist"]
+[ext_resource type="AudioStream" uid="uid://dytaxj1wk1dv0" path="res://assets/audio/sfx/sfx_gladiator_hit_unarmored.wav" id="17_sfx_gladiator_hit_unarmored"]
+[ext_resource type="AudioStream" uid="uid://baa47ytmldouh" path="res://assets/audio/sfx/sfx_gladiator_hit_armored.wav" id="18_sfx_gladiator_hit_armored"]
+[ext_resource type="AudioStream" uid="uid://d1i4kq3udflmc" path="res://assets/audio/sfx/sfx_gladiator_hit_fully_absorbed.wav" id="19_sfx_gladiator_hit_fully_absorbed"]
+[ext_resource type="AudioStream" uid="uid://cub54obv08ov3" path="res://assets/audio/sfx/sfx_gladiator_health_low.wav" id="20_sfx_gladiator_health_low"]
+[ext_resource type="AudioStream" uid="uid://urn7w384n7nf" path="res://assets/audio/sfx/sfx_gladiator_died_hero.wav" id="21_sfx_gladiator_died_hero"]
+[ext_resource type="AudioStream" uid="uid://biqfjm2857ilu" path="res://assets/audio/sfx/sfx_gladiator_died_enemy.wav" id="22_sfx_gladiator_died_enemy"]
+[ext_resource type="AudioStream" uid="uid://tbnlsp0hkf67" path="res://assets/audio/sfx/sfx_gladiator_healed.wav" id="23_sfx_gladiator_healed"]
+[ext_resource type="AudioStream" uid="uid://daecvo1skut3c" path="res://assets/audio/sfx/sfx_gladiator_heal_wasted.wav" id="24_sfx_gladiator_heal_wasted"]
+[ext_resource type="AudioStream" uid="uid://jf5son2ccoxr" path="res://assets/audio/sfx/sfx_gladiator_stamina_depleted.wav" id="25_sfx_gladiator_stamina_depleted"]
+[ext_resource type="AudioStream" uid="uid://cky4rqmc6x67" path="res://assets/audio/sfx/sfx_gladiator_exhausted_loop.wav" id="26_sfx_gladiator_exhausted_loop"]
+[ext_resource type="AudioStream" uid="uid://ctkphyp4crt7k" path="res://assets/audio/sfx/sfx_gladiator_stamina_restored.wav" id="27_sfx_gladiator_stamina_restored"]
+[ext_resource type="AudioStream" uid="uid://bs7rp1dt6waf2" path="res://assets/audio/sfx/sfx_gladiator_stamina_recovered.wav" id="28_sfx_gladiator_stamina_recovered"]
+[ext_resource type="AudioStream" uid="uid://bsqgaqllico3h" path="res://assets/audio/sfx/sfx_equipment_equipped_weapon.wav" id="29_sfx_equipment_equipped_weapon"]
+[ext_resource type="AudioStream" uid="uid://bxcgvrehh80v5" path="res://assets/audio/sfx/sfx_equipment_equipped_armor.wav" id="30_sfx_equipment_equipped_armor"]
+[ext_resource type="AudioStream" uid="uid://dmlfrmmpjhkf8" path="res://assets/audio/sfx/sfx_equipment_swapped.wav" id="31_sfx_equipment_swapped"]
+[ext_resource type="AudioStream" uid="uid://nk0fog3skq3h" path="res://assets/audio/sfx/sfx_equipment_displaced_piece_popped.wav" id="32_sfx_equipment_displaced_piece_popped"]
+[ext_resource type="AudioStream" uid="uid://b3fil5rg7fvge" path="res://assets/audio/sfx/sfx_equipment_nearly_broken.wav" id="33_sfx_equipment_nearly_broken"]
+[ext_resource type="AudioStream" uid="uid://bctf2l7lupug6" path="res://assets/audio/sfx/sfx_equipment_broke_weapon.wav" id="34_sfx_equipment_broke_weapon"]
+[ext_resource type="AudioStream" uid="uid://h5kuvjcawnuh" path="res://assets/audio/sfx/sfx_equipment_broke_armor.wav" id="35_sfx_equipment_broke_armor"]
+[ext_resource type="AudioStream" uid="uid://khtjypk5h2q6" path="res://assets/audio/sfx/sfx_equipment_reject_invalid_target.wav" id="36_sfx_equipment_reject_invalid_target"]
+[ext_resource type="AudioStream" uid="uid://cqta1h1ndppd" path="res://assets/audio/sfx/sfx_item_junk_useless.wav" id="37_sfx_item_junk_useless"]
+[ext_resource type="AudioStream" uid="uid://hdf72lbxs02f" path="res://assets/audio/sfx/sfx_item_spawned_thrown.wav" id="38_sfx_item_spawned_thrown"]
+[ext_resource type="AudioStream" uid="uid://hgkv7rkpcypi" path="res://assets/audio/sfx/sfx_item_dragged_loop.wav" id="39_sfx_item_dragged_loop"]
+[ext_resource type="AudioStream" uid="uid://b7fn1nw6lubfa" path="res://assets/audio/sfx/sfx_item_released.wav" id="40_sfx_item_released"]
+[ext_resource type="AudioStream" uid="uid://c64jt0eyodmqe" path="res://assets/audio/sfx/sfx_item_hover_valid_target.wav" id="41_sfx_item_hover_valid_target"]
+[ext_resource type="AudioStream" uid="uid://b3vs0uijlc4m8" path="res://assets/audio/sfx/sfx_item_hover_lost.wav" id="42_sfx_item_hover_lost"]
+[ext_resource type="AudioStream" uid="uid://dr8ey33i4ae2y" path="res://assets/audio/sfx/sfx_item_consumed_meat.wav" id="43_sfx_item_consumed_meat"]
+[ext_resource type="AudioStream" uid="uid://k0ktgc1sk3tc" path="res://assets/audio/sfx/sfx_item_consumed_potion.wav" id="44_sfx_item_consumed_potion"]
+[ext_resource type="AudioStream" uid="uid://cbainoe8tmxs8" path="res://assets/audio/sfx/sfx_hotbar_slot_filled.wav" id="45_sfx_hotbar_slot_filled"]
+[ext_resource type="AudioStream" uid="uid://jmdmnp6is34k" path="res://assets/audio/sfx/sfx_hotbar_slot_replaced.wav" id="46_sfx_hotbar_slot_replaced"]
+[ext_resource type="AudioStream" uid="uid://tte2hfmj7ksb" path="res://assets/audio/sfx/sfx_hotbar_item_removed.wav" id="47_sfx_hotbar_item_removed"]
+[ext_resource type="AudioStream" uid="uid://5tqunxrpv60" path="res://assets/audio/sfx/sfx_hotbar_slot_used.wav" id="48_sfx_hotbar_slot_used"]
+[ext_resource type="AudioStream" uid="uid://dldok0i3am1yj" path="res://assets/audio/sfx/sfx_hotbar_slot_empty_pressed.wav" id="49_sfx_hotbar_slot_empty_pressed"]
+[ext_resource type="AudioStream" uid="uid://dmsj1uh0p4rud" path="res://assets/audio/sfx/sfx_hotbar_use_blocked_dead_hero.wav" id="50_sfx_hotbar_use_blocked_dead_hero"]
+[ext_resource type="AudioStream" uid="uid://chkp3u0vfqrgl" path="res://assets/audio/sfx/sfx_ui_title_screen_started.wav" id="51_sfx_ui_title_screen_started"]
+[ext_resource type="AudioStream" uid="uid://coa7k1mxvhmx2" path="res://assets/audio/sfx/sfx_ui_scene_transition_started.wav" id="52_sfx_ui_scene_transition_started"]
+[ext_resource type="AudioStream" uid="uid://dsac35sbw1w2l" path="res://assets/audio/sfx/sfx_ui_scene_transition_finished.wav" id="53_sfx_ui_scene_transition_finished"]
 
 [node name="SoundManager" type="AudioStreamPlayer"]
 process_mode = 3
@@ -35,4 +84,421 @@ script = ExtResource("2_t4w6u")
 global_name = "GlobalSignalBus"
 start_signal_name = "ui_button_hovered"
 sound_effect = ExtResource("3_57f3y")
+metadata/_custom_type_script = "uid://dd8uxrmtutff5"
+
+[node name="MatchStartedConnector" type="Node" parent="."]
+script = ExtResource("2_t4w6u")
+player_type = 3
+global_name = "GlobalSignalBus"
+start_signal_name = "match_started"
+sound_effect = ExtResource("5_sfx_match_started")
+metadata/_custom_type_script = "uid://dd8uxrmtutff5"
+
+[node name="MatchFirstBloodConnector" type="Node" parent="."]
+script = ExtResource("2_t4w6u")
+player_type = 3
+global_name = "GlobalSignalBus"
+start_signal_name = "match_first_blood"
+sound_effect = ExtResource("6_sfx_match_first_blood")
+metadata/_custom_type_script = "uid://dd8uxrmtutff5"
+
+[node name="MatchVictoryConnector" type="Node" parent="."]
+script = ExtResource("2_t4w6u")
+player_type = 3
+global_name = "GlobalSignalBus"
+start_signal_name = "battle_ended"
+sound_effect = ExtResource("7_sfx_match_ended_hero_victory")
+arg_conditions = {"0": true}
+metadata/_custom_type_script = "uid://dd8uxrmtutff5"
+
+[node name="MatchDefeatConnector" type="Node" parent="."]
+script = ExtResource("2_t4w6u")
+player_type = 3
+global_name = "GlobalSignalBus"
+start_signal_name = "battle_ended"
+sound_effect = ExtResource("8_sfx_match_ended_hero_defeat")
+arg_conditions = {"0": false}
+metadata/_custom_type_script = "uid://dd8uxrmtutff5"
+
+[node name="MatchResultRevealedConnector" type="Node" parent="."]
+script = ExtResource("2_t4w6u")
+player_type = 3
+global_name = "GlobalSignalBus"
+start_signal_name = "match_result_revealed"
+sound_effect = ExtResource("9_sfx_match_result_revealed")
+metadata/_custom_type_script = "uid://dd8uxrmtutff5"
+
+[node name="SwingArmedConnector" type="Node" parent="."]
+script = ExtResource("2_t4w6u")
+player_type = 3
+global_name = "GlobalSignalBus"
+start_signal_name = "unit_swing"
+sound_effect = ExtResource("10_sfx_gladiator_swing_armed")
+arg_conditions = {"1": true, "2": false}
+metadata/_custom_type_script = "uid://dd8uxrmtutff5"
+
+[node name="SwingUnarmedConnector" type="Node" parent="."]
+script = ExtResource("2_t4w6u")
+player_type = 3
+global_name = "GlobalSignalBus"
+start_signal_name = "unit_swing"
+sound_effect = ExtResource("11_sfx_gladiator_swing_unarmed")
+arg_conditions = {"1": false, "2": false}
+metadata/_custom_type_script = "uid://dd8uxrmtutff5"
+
+[node name="SwingExhaustedConnector" type="Node" parent="."]
+script = ExtResource("2_t4w6u")
+player_type = 3
+global_name = "GlobalSignalBus"
+start_signal_name = "unit_swing"
+sound_effect = ExtResource("12_sfx_gladiator_swing_exhausted")
+arg_conditions = {"2": true}
+metadata/_custom_type_script = "uid://dd8uxrmtutff5"
+
+[node name="SwingWhiffsConnector" type="Node" parent="."]
+script = ExtResource("2_t4w6u")
+player_type = 3
+global_name = "GlobalSignalBus"
+start_signal_name = "unit_strike_whiffed"
+sound_effect = ExtResource("13_sfx_gladiator_swing_whiffs")
+metadata/_custom_type_script = "uid://dd8uxrmtutff5"
+
+[node name="StrikeLandsConnector" type="Node" parent="."]
+script = ExtResource("2_t4w6u")
+player_type = 3
+global_name = "GlobalSignalBus"
+start_signal_name = "unit_strike_landed"
+sound_effect = ExtResource("14_sfx_gladiator_strike_lands")
+metadata/_custom_type_script = "uid://dd8uxrmtutff5"
+
+[node name="HitBySwordConnector" type="Node" parent="."]
+script = ExtResource("2_t4w6u")
+player_type = 3
+global_name = "GlobalSignalBus"
+start_signal_name = "unit_strike_landed"
+sound_effect = ExtResource("15_sfx_gladiator_hit_by_sword")
+arg_conditions = {"2": true}
+metadata/_custom_type_script = "uid://dd8uxrmtutff5"
+
+[node name="HitByFistConnector" type="Node" parent="."]
+script = ExtResource("2_t4w6u")
+player_type = 3
+global_name = "GlobalSignalBus"
+start_signal_name = "unit_strike_landed"
+sound_effect = ExtResource("16_sfx_gladiator_hit_by_fist")
+arg_conditions = {"2": false}
+metadata/_custom_type_script = "uid://dd8uxrmtutff5"
+
+[node name="HitUnarmoredConnector" type="Node" parent="."]
+script = ExtResource("2_t4w6u")
+player_type = 3
+global_name = "GlobalSignalBus"
+start_signal_name = "unit_damage_resolved"
+sound_effect = ExtResource("17_sfx_gladiator_hit_unarmored")
+arg_conditions = {"2": false}
+metadata/_custom_type_script = "uid://dd8uxrmtutff5"
+
+[node name="HitArmoredConnector" type="Node" parent="."]
+script = ExtResource("2_t4w6u")
+player_type = 3
+global_name = "GlobalSignalBus"
+start_signal_name = "unit_damage_resolved"
+sound_effect = ExtResource("18_sfx_gladiator_hit_armored")
+arg_conditions = {"2": true}
+arg_conditions_not = {"1": 0}
+metadata/_custom_type_script = "uid://dd8uxrmtutff5"
+
+[node name="HitFullyAbsorbedConnector" type="Node" parent="."]
+script = ExtResource("2_t4w6u")
+player_type = 3
+global_name = "GlobalSignalBus"
+start_signal_name = "unit_damage_resolved"
+sound_effect = ExtResource("19_sfx_gladiator_hit_fully_absorbed")
+arg_conditions = {"1": 0, "2": true}
+metadata/_custom_type_script = "uid://dd8uxrmtutff5"
+
+[node name="HealthLowConnector" type="Node" parent="."]
+script = ExtResource("2_t4w6u")
+player_type = 3
+global_name = "GlobalSignalBus"
+start_signal_name = "unit_health_low"
+sound_effect = ExtResource("20_sfx_gladiator_health_low")
+metadata/_custom_type_script = "uid://dd8uxrmtutff5"
+
+[node name="HeroDiedConnector" type="Node" parent="."]
+script = ExtResource("2_t4w6u")
+player_type = 3
+global_name = "GlobalSignalBus"
+start_signal_name = "hero_gladiator_died"
+sound_effect = ExtResource("21_sfx_gladiator_died_hero")
+metadata/_custom_type_script = "uid://dd8uxrmtutff5"
+
+[node name="EnemyDiedConnector" type="Node" parent="."]
+script = ExtResource("2_t4w6u")
+player_type = 3
+global_name = "GlobalSignalBus"
+start_signal_name = "enemy_gladiator_died"
+sound_effect = ExtResource("22_sfx_gladiator_died_enemy")
+metadata/_custom_type_script = "uid://dd8uxrmtutff5"
+
+[node name="HealedConnector" type="Node" parent="."]
+script = ExtResource("2_t4w6u")
+player_type = 3
+global_name = "GlobalSignalBus"
+start_signal_name = "unit_healed"
+sound_effect = ExtResource("23_sfx_gladiator_healed")
+metadata/_custom_type_script = "uid://dd8uxrmtutff5"
+
+[node name="HealWastedConnector" type="Node" parent="."]
+script = ExtResource("2_t4w6u")
+player_type = 3
+global_name = "GlobalSignalBus"
+start_signal_name = "unit_heal_wasted"
+sound_effect = ExtResource("24_sfx_gladiator_heal_wasted")
+metadata/_custom_type_script = "uid://dd8uxrmtutff5"
+
+[node name="StaminaDepletedConnector" type="Node" parent="."]
+script = ExtResource("2_t4w6u")
+player_type = 3
+global_name = "GlobalSignalBus"
+start_signal_name = "unit_stamina_depleted"
+sound_effect = ExtResource("25_sfx_gladiator_stamina_depleted")
+metadata/_custom_type_script = "uid://dd8uxrmtutff5"
+
+[node name="ExhaustedLoopConnector" type="Node" parent="."]
+script = ExtResource("2_t4w6u")
+player_type = 3
+global_name = "GlobalSignalBus"
+start_signal_name = "unit_stamina_depleted"
+stop_signal_name = "unit_stamina_recovered"
+sound_effect = ExtResource("26_sfx_gladiator_exhausted_loop")
+metadata/_custom_type_script = "uid://dd8uxrmtutff5"
+
+[node name="StaminaRestoredConnector" type="Node" parent="."]
+script = ExtResource("2_t4w6u")
+player_type = 3
+global_name = "GlobalSignalBus"
+start_signal_name = "unit_stamina_restored"
+sound_effect = ExtResource("27_sfx_gladiator_stamina_restored")
+metadata/_custom_type_script = "uid://dd8uxrmtutff5"
+
+[node name="StaminaRecoveredConnector" type="Node" parent="."]
+script = ExtResource("2_t4w6u")
+player_type = 3
+global_name = "GlobalSignalBus"
+start_signal_name = "unit_stamina_recovered"
+sound_effect = ExtResource("28_sfx_gladiator_stamina_recovered")
+metadata/_custom_type_script = "uid://dd8uxrmtutff5"
+
+[node name="EquippedWeaponConnector" type="Node" parent="."]
+script = ExtResource("2_t4w6u")
+player_type = 3
+global_name = "GlobalSignalBus"
+start_signal_name = "unit_equipped"
+sound_effect = ExtResource("29_sfx_equipment_equipped_weapon")
+arg_class_conditions = {"2:equipment": "WeaponDef"}
+metadata/_custom_type_script = "uid://dd8uxrmtutff5"
+
+[node name="EquippedArmorConnector" type="Node" parent="."]
+script = ExtResource("2_t4w6u")
+player_type = 3
+global_name = "GlobalSignalBus"
+start_signal_name = "unit_equipped"
+sound_effect = ExtResource("30_sfx_equipment_equipped_armor")
+arg_class_conditions = {"2:equipment": "ArmorDef"}
+metadata/_custom_type_script = "uid://dd8uxrmtutff5"
+
+[node name="EquipmentSwappedConnector" type="Node" parent="."]
+script = ExtResource("2_t4w6u")
+player_type = 3
+global_name = "GlobalSignalBus"
+start_signal_name = "unit_equipped"
+sound_effect = ExtResource("31_sfx_equipment_swapped")
+arg_conditions = {"3": true}
+metadata/_custom_type_script = "uid://dd8uxrmtutff5"
+
+[node name="PiecePoppedConnector" type="Node" parent="."]
+script = ExtResource("2_t4w6u")
+player_type = 3
+global_name = "GlobalSignalBus"
+start_signal_name = "equipment_piece_popped"
+sound_effect = ExtResource("32_sfx_equipment_displaced_piece_popped")
+metadata/_custom_type_script = "uid://dd8uxrmtutff5"
+
+[node name="NearlyBrokenConnector" type="Node" parent="."]
+script = ExtResource("2_t4w6u")
+player_type = 3
+global_name = "GlobalSignalBus"
+start_signal_name = "unit_equipment_nearly_broken"
+sound_effect = ExtResource("33_sfx_equipment_nearly_broken")
+metadata/_custom_type_script = "uid://dd8uxrmtutff5"
+
+[node name="BrokeWeaponConnector" type="Node" parent="."]
+script = ExtResource("2_t4w6u")
+player_type = 3
+global_name = "GlobalSignalBus"
+start_signal_name = "unit_equipment_broke"
+sound_effect = ExtResource("34_sfx_equipment_broke_weapon")
+arg_class_conditions = {"2:equipment": "WeaponDef"}
+metadata/_custom_type_script = "uid://dd8uxrmtutff5"
+
+[node name="BrokeArmorConnector" type="Node" parent="."]
+script = ExtResource("2_t4w6u")
+player_type = 3
+global_name = "GlobalSignalBus"
+start_signal_name = "unit_equipment_broke"
+sound_effect = ExtResource("35_sfx_equipment_broke_armor")
+arg_class_conditions = {"2:equipment": "ArmorDef"}
+metadata/_custom_type_script = "uid://dd8uxrmtutff5"
+
+[node name="DropRejectedConnector" type="Node" parent="."]
+script = ExtResource("2_t4w6u")
+player_type = 3
+global_name = "GlobalSignalBus"
+start_signal_name = "item_drop_rejected"
+sound_effect = ExtResource("36_sfx_equipment_reject_invalid_target")
+arg_conditions_not = {"0:definition:type": 0}
+metadata/_custom_type_script = "uid://dd8uxrmtutff5"
+
+[node name="JunkUselessConnector" type="Node" parent="."]
+script = ExtResource("2_t4w6u")
+player_type = 3
+global_name = "GlobalSignalBus"
+start_signal_name = "item_drop_rejected"
+sound_effect = ExtResource("37_sfx_item_junk_useless")
+arg_conditions = {"0:definition:type": 0}
+metadata/_custom_type_script = "uid://dd8uxrmtutff5"
+
+[node name="ItemSpawnedConnector" type="Node" parent="."]
+script = ExtResource("2_t4w6u")
+player_type = 3
+global_name = "GlobalSignalBus"
+start_signal_name = "item_spawned"
+sound_effect = ExtResource("38_sfx_item_spawned_thrown")
+metadata/_custom_type_script = "uid://dd8uxrmtutff5"
+
+[node name="ItemDraggedLoopConnector" type="Node" parent="."]
+script = ExtResource("2_t4w6u")
+player_type = 3
+global_name = "GlobalSignalBus"
+start_signal_name = "item_drag_started"
+stop_signal_name = "item_drag_ended"
+sound_effect = ExtResource("39_sfx_item_dragged_loop")
+metadata/_custom_type_script = "uid://dd8uxrmtutff5"
+
+[node name="ItemReleasedConnector" type="Node" parent="."]
+script = ExtResource("2_t4w6u")
+player_type = 3
+global_name = "GlobalSignalBus"
+start_signal_name = "item_drag_ended"
+sound_effect = ExtResource("40_sfx_item_released")
+arg_conditions_not = {"0": null}
+metadata/_custom_type_script = "uid://dd8uxrmtutff5"
+
+[node name="HoverValidTargetConnector" type="Node" parent="."]
+script = ExtResource("2_t4w6u")
+player_type = 3
+global_name = "GlobalSignalBus"
+start_signal_name = "item_hover_target_entered"
+sound_effect = ExtResource("41_sfx_item_hover_valid_target")
+metadata/_custom_type_script = "uid://dd8uxrmtutff5"
+
+[node name="HoverLostConnector" type="Node" parent="."]
+script = ExtResource("2_t4w6u")
+player_type = 3
+global_name = "GlobalSignalBus"
+start_signal_name = "item_hover_target_lost"
+sound_effect = ExtResource("42_sfx_item_hover_lost")
+metadata/_custom_type_script = "uid://dd8uxrmtutff5"
+
+[node name="ConsumedMeatConnector" type="Node" parent="."]
+script = ExtResource("2_t4w6u")
+player_type = 3
+global_name = "GlobalSignalBus"
+start_signal_name = "item_consumed"
+sound_effect = ExtResource("43_sfx_item_consumed_meat")
+arg_conditions = {"0:type": 2}
+metadata/_custom_type_script = "uid://dd8uxrmtutff5"
+
+[node name="ConsumedPotionConnector" type="Node" parent="."]
+script = ExtResource("2_t4w6u")
+player_type = 3
+global_name = "GlobalSignalBus"
+start_signal_name = "item_consumed"
+sound_effect = ExtResource("44_sfx_item_consumed_potion")
+arg_conditions = {"0:type": 3}
+metadata/_custom_type_script = "uid://dd8uxrmtutff5"
+
+[node name="HotbarSlotFilledConnector" type="Node" parent="."]
+script = ExtResource("2_t4w6u")
+player_type = 3
+global_name = "GlobalSignalBus"
+start_signal_name = "hotbar_slot_filled"
+sound_effect = ExtResource("45_sfx_hotbar_slot_filled")
+metadata/_custom_type_script = "uid://dd8uxrmtutff5"
+
+[node name="HotbarSlotReplacedConnector" type="Node" parent="."]
+script = ExtResource("2_t4w6u")
+player_type = 3
+global_name = "GlobalSignalBus"
+start_signal_name = "hotbar_slot_replaced"
+sound_effect = ExtResource("46_sfx_hotbar_slot_replaced")
+metadata/_custom_type_script = "uid://dd8uxrmtutff5"
+
+[node name="HotbarItemRemovedConnector" type="Node" parent="."]
+script = ExtResource("2_t4w6u")
+player_type = 3
+global_name = "GlobalSignalBus"
+start_signal_name = "hotbar_item_removed"
+sound_effect = ExtResource("47_sfx_hotbar_item_removed")
+metadata/_custom_type_script = "uid://dd8uxrmtutff5"
+
+[node name="HotbarSlotUsedConnector" type="Node" parent="."]
+script = ExtResource("2_t4w6u")
+player_type = 3
+global_name = "GlobalSignalBus"
+start_signal_name = "hotbar_slot_used"
+sound_effect = ExtResource("48_sfx_hotbar_slot_used")
+metadata/_custom_type_script = "uid://dd8uxrmtutff5"
+
+[node name="HotbarEmptySlotConnector" type="Node" parent="."]
+script = ExtResource("2_t4w6u")
+player_type = 3
+global_name = "GlobalSignalBus"
+start_signal_name = "hotbar_use_failed"
+sound_effect = ExtResource("49_sfx_hotbar_slot_empty_pressed")
+arg_conditions = {"0": 0}
+metadata/_custom_type_script = "uid://dd8uxrmtutff5"
+
+[node name="HotbarDeadHeroConnector" type="Node" parent="."]
+script = ExtResource("2_t4w6u")
+player_type = 3
+global_name = "GlobalSignalBus"
+start_signal_name = "hotbar_use_failed"
+sound_effect = ExtResource("50_sfx_hotbar_use_blocked_dead_hero")
+arg_conditions = {"0": 1}
+metadata/_custom_type_script = "uid://dd8uxrmtutff5"
+
+[node name="TitleScreenConnector" type="Node" parent="."]
+script = ExtResource("2_t4w6u")
+player_type = 3
+global_name = "GlobalSignalBus"
+start_signal_name = "title_screen_started"
+sound_effect = ExtResource("51_sfx_ui_title_screen_started")
+metadata/_custom_type_script = "uid://dd8uxrmtutff5"
+
+[node name="SceneTransitionStartedConnector" type="Node" parent="."]
+script = ExtResource("2_t4w6u")
+player_type = 3
+global_name = "SceneTransitionManager"
+start_signal_name = "faded_out"
+sound_effect = ExtResource("52_sfx_ui_scene_transition_started")
+metadata/_custom_type_script = "uid://dd8uxrmtutff5"
+
+[node name="SceneTransitionFinishedConnector" type="Node" parent="."]
+script = ExtResource("2_t4w6u")
+player_type = 3
+global_name = "SceneTransitionManager"
+start_signal_name = "faded_in"
+sound_effect = ExtResource("53_sfx_ui_scene_transition_finished")
 metadata/_custom_type_script = "uid://dd8uxrmtutff5"

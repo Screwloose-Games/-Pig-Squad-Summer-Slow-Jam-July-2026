@@ -1,0 +1,52 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://prototypes/team-battle/team_battle.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://kqn1j8eajpw6" path="res://assets/solid_background.png" id="2_bg"]
+[ext_resource type="PackedScene" uid="uid://d35tn8qf7fgxh" path="res://prototypes/battle_unit.tscn" id="3_unit"]
+[ext_resource type="Resource" path="res://prototypes/team-battle/champion_stats.tres" id="4_champion"]
+[ext_resource type="Resource" uid="uid://cdfwv2uh25r5r" path="res://prototypes/variants/rogue.tres" id="5_rogue"]
+[ext_resource type="Script" uid="uid://csgk6fnmwcodq" path="res://prototypes/gladiator_match.gd" id="6_match"]
+[ext_resource type="PackedScene" path="res://prototypes/battle_end_overlay.tscn" id="7_endoverlay"]
+
+[node name="TeamBattle" type="Node2D"]
+script = ExtResource("1_script")
+
+[node name="BackgroundCol" type="Sprite2D" parent="."]
+position = Vector2(666, 354)
+scale = Vector2(0.3954997, 0.3954997)
+texture = ExtResource("2_bg")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(640, 360)
+
+[node name="HeroGladiator" parent="." instance=ExtResource("3_unit")]
+position = Vector2(300, 545)
+scale = Vector2(1.5, 1.5)
+stats = ExtResource("4_champion")
+
+[node name="EnemyFront" parent="." instance=ExtResource("3_unit")]
+position = Vector2(800, 530)
+scale = Vector2(1.35, 1.35)
+stats = ExtResource("5_rogue")
+side = 1
+facing_left = true
+
+[node name="EnemyBack" parent="." instance=ExtResource("3_unit")]
+position = Vector2(1010, 460)
+scale = Vector2(0.95, 0.95)
+stats = ExtResource("5_rogue")
+side = 1
+facing_left = true
+
+[node name="DamageNumbers" type="Node2D" parent="."]
+unique_name_in_owner = true
+
+[node name="GladiatorMatch" type="Node" parent="." node_paths=PackedStringArray("hero_team", "enemy_team")]
+unique_name_in_owner = true
+script = ExtResource("6_match")
+hero_team = [NodePath("../HeroGladiator")]
+enemy_team = [NodePath("../EnemyFront"), NodePath("../EnemyBack")]
+metadata/_custom_type_script = "uid://csgk6fnmwcodq"
+
+[node name="BattleEndOverlay" parent="." instance=ExtResource("7_endoverlay")]
+unique_name_in_owner = true

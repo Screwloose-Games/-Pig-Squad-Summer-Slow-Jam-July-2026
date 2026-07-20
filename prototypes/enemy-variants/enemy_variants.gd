@@ -25,7 +25,6 @@ const CYCLE_VARIANT_KEY: Key = KEY_V
 ## The archetypes to cycle through, in order. The enemy starts as the first.
 @export var variants: Array[UnitStats]
 
-var _battle_over: bool = false
 var _variant_index: int = 0
 
 @onready var hero: BattleUnit = %HeroGladiator
@@ -34,13 +33,11 @@ var _variant_index: int = 0
 @onready var hero_nameplate: BattleNameplate = %HeroNameplate
 @onready var enemy_nameplate: BattleNameplate = %EnemyNameplate
 @onready var end_overlay: BattleEndOverlay = %BattleEndOverlay
+@onready var gladiator_match: GladiatorMatch = %GladiatorMatch
 
 
 func _ready() -> void:
-	hero.setup(enemy)
-	enemy.setup(hero)
 	GlobalSignalBus.unit_hurt.connect(_on_unit_hurt)
-	GlobalSignalBus.unit_died.connect(_on_unit_died)
 	_start_fight()
 
 
@@ -61,7 +58,9 @@ func _unhandled_input(event: InputEvent) -> void:
 ## current archetype. Also the first-run path, so opening the scene and cycling into a variant
 ## go through exactly the same code and cannot drift apart.
 func _start_fight() -> void:
-	_battle_over = false
+	# Cycling away mid-fight: put the current match down before rebuilding the fighters, so
+	# nobody is still swinging while their stats are swapped underneath them.
+	gladiator_match.stop()
 	end_overlay.hide_result()
 	hero.reset_for_new_fight()
 	# The enemy's stats have to be re-applied rather than set in the editor: _apply_stats() runs
@@ -69,8 +68,10 @@ func _start_fight() -> void:
 	enemy.reset_for_new_fight(_current_variant())
 	hero_nameplate.setup(hero.stats)
 	enemy_nameplate.setup(enemy.stats)
-	hero.start_fighting()
-	enemy.start_fighting()
+	# Runs on every cycle into a variant, not just the first fight — each one is a new match
+	# and opens with the same go-signal. start() re-assigns targets, so the fresh archetype
+	# is picked up without this scene touching either unit's target.
+	gladiator_match.start()
 
 
 func _current_variant() -> UnitStats:
@@ -89,16 +90,6 @@ func _on_unit_hurt(unit: Node2D, amount: int) -> void:
 	var spawn_at: Vector2 = unit.global_position + Vector2(-12.0, -90.0) * unit.scale
 	number.position = damage_numbers.to_local(spawn_at)
 	damage_numbers.add_child(number)
-
-
-func _on_unit_died(unit: Node2D) -> void:
-	if _battle_over:
-		return
-	_battle_over = true
-	hero.stop_fighting()
-	enemy.stop_fighting()
-	# The overlay listens for this on the bus; it is not wired to this scene directly.
-	GlobalSignalBus.battle_ended.emit(unit == enemy)
 
 
 func _place_nameplate(plate: BattleNameplate, unit: BattleUnit) -> void:

@@ -1,40 +1,31 @@
 extends Node2D
-## Auto-battle prototype controller: wires the two units to each other,
-## spawns floating damage numbers and plays hit sounds. Units know nothing about
-## audio or UI, and the end overlay shows itself off battle_ended, so this only has
-## to call the fight.
+## Auto-battle prototype controller: spawns floating damage numbers and plays hit sounds.
+## The fight itself belongs to the GladiatorMatch node — it pairs the units, starts them and
+## calls the winner. Units know nothing about audio or UI, and the end overlay shows itself
+## off battle_ended, so this only has to kick the match off.
 
 const DAMAGE_NUMBER_SCENE: PackedScene = preload("res://prototypes/damage_number.tscn")
 const HIT_SOUND: AudioStream = preload("res://common/audio/sfx/ui/UI_CLICK.wav")
-
-var _battle_over: bool = false
-## Latches match_first_blood: unit_hurt fires on every hit, but the moment the staredown
-## becomes a fight happens once. Match-level, so it lives here rather than on a unit.
-var _first_blood_done: bool = false
 
 @onready var hero: BattleUnit = %HeroGladiator
 @onready var enemy: BattleUnit = %EnemyGladiator
 @onready var damage_numbers: Node2D = %DamageNumbers
 @onready var hero_nameplate: BattleNameplate = %HeroNameplate
 @onready var enemy_nameplate: BattleNameplate = %EnemyNameplate
+@onready var gladiator_match: GladiatorMatch = %GladiatorMatch
 
 
 func _ready() -> void:
-	hero.setup(enemy)
-	enemy.setup(hero)
 	GlobalSignalBus.unit_hurt.connect(_on_unit_hurt)
-	GlobalSignalBus.unit_died.connect(_on_unit_died)
 	hero_nameplate.setup(hero.stats)
 	enemy_nameplate.setup(enemy.stats)
+	# level_started says this scene is up, which level_01 says too; the match's own
+	# match_started says a fight is beginning, and the go-signal audio hangs off that one.
 	GlobalSignalBus.level_started.emit()
-	hero.start_fighting()
-	enemy.start_fighting()
+	gladiator_match.start()
 
 
 func _on_unit_hurt(unit: Node2D, amount: int) -> void:
-	if not _first_blood_done:
-		_first_blood_done = true
-		GlobalSignalBus.match_first_blood.emit()
 	var number: DamageNumber = DAMAGE_NUMBER_SCENE.instantiate()
 	number.setup(amount)
 	# Position before adding: the number's _ready() reads its own position to seed
@@ -45,13 +36,3 @@ func _on_unit_hurt(unit: Node2D, amount: int) -> void:
 	number.position = damage_numbers.to_local(spawn_at)
 	damage_numbers.add_child(number)
 	SoundManager.play_sound(HIT_SOUND, GSoundManager.SoundPlayerType.UI)
-
-
-func _on_unit_died(unit: Node2D) -> void:
-	if _battle_over:
-		return
-	_battle_over = true
-	hero.stop_fighting()
-	enemy.stop_fighting()
-	# BattleEndOverlay picks this up off the bus and handles its own reveal and restart.
-	GlobalSignalBus.battle_ended.emit(unit == enemy)

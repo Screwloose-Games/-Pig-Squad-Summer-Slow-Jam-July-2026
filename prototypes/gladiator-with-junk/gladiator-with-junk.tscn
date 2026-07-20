@@ -16,8 +16,10 @@
 [ext_resource type="Script" uid="uid://dmpmu353vv0wy" path="res://items/equipment/equipment_rig_sync.gd" id="11_4buos"]
 [ext_resource type="PackedScene" uid="uid://bnp1tk8qy4wxv" path="res://prototypes/battle_nameplate.tscn" id="11_nmplt"]
 [ext_resource type="PackedScene" uid="uid://blrpgg17yowrc" path="res://items/hotbar/hotbar.tscn" id="12_hotbar"]
+[ext_resource type="Script" uid="uid://csgk6fnmwcodq" path="res://prototypes/gladiator_match.gd" id="13_match"]
 [ext_resource type="Script" uid="uid://epyxhh71y1vi" path="res://globals/sound_manager/music_player_looper.gd" id="20_looper"]
 [ext_resource type="AudioStream" uid="uid://ca5j6yetesg3q" path="res://common/audio/music/I've Got Your Back! (Intro).ogg" id="21_mintro"]
+[ext_resource type="PackedScene" uid="uid://b8b6q7g4bsaw5" path="res://common/ui/pause_menu/pause_menu.tscn" id="21_syrxk"]
 [ext_resource type="AudioStream" uid="uid://b3we3vcmsdk2i" path="res://common/audio/music/I've Got Your Back! (Main Loop).ogg" id="22_mloop"]
 
 [node name="GladiatorWithJunk" type="Node2D" unique_id=750415397]
@@ -105,6 +107,13 @@ offset_bottom = 117.0
 grow_vertical = 1
 hero = NodePath("../../HeroGladiator")
 
+[node name="GladiatorMatch" type="Node" parent="." unique_id=979241469 node_paths=PackedStringArray("hero_team", "enemy_team")]
+unique_name_in_owner = true
+script = ExtResource("13_match")
+hero_team = [NodePath("../HeroGladiator")]
+enemy_team = [NodePath("../EnemyGladiator")]
+metadata/_custom_type_script = "uid://csgk6fnmwcodq"
+
 [node name="BattleEndOverlay" parent="." unique_id=1818025901 instance=ExtResource("10_endoverlay")]
 
 [node name="MusicPlayerLooper" type="Node" parent="." unique_id=661107575 node_paths=PackedStringArray("intro_player", "loop_player")]
@@ -118,3 +127,5 @@ stream = ExtResource("21_mintro")
 
 [node name="MusicLoopAudioStreamPlayer" type="AudioStreamPlayer" parent="MusicPlayerLooper" unique_id=303153998]
 stream = ExtResource("22_mloop")
+
+[node name="PauseMenu" parent="." unique_id=1310690818 instance=ExtResource("21_syrxk")]

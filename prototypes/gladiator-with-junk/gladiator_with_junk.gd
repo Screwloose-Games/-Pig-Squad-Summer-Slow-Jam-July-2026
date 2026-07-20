@@ -23,24 +23,19 @@ const NAMEPLATE_GAP: float = 8.0
 ## room (the bar collapses toward zero width if left to the content minimum).
 const NAMEPLATE_WIDTH: float = 240.0
 
-var _battle_over: bool = false
-
 @onready var hero: BattleUnit = %HeroGladiator
 @onready var enemy: BattleUnit = %EnemyGladiator
 @onready var damage_numbers: Node2D = %DamageNumbers
 @onready var hero_nameplate: BattleNameplate = %HeroNameplate
 @onready var enemy_nameplate: BattleNameplate = %EnemyNameplate
+@onready var gladiator_match: GladiatorMatch = %GladiatorMatch
 
 
 func _ready() -> void:
-	hero.setup(enemy)
-	enemy.setup(hero)
 	GlobalSignalBus.unit_hurt.connect(_on_unit_hurt)
-	GlobalSignalBus.unit_died.connect(_on_unit_died)
 	hero_nameplate.setup(hero.stats)
 	enemy_nameplate.setup(enemy.stats)
-	hero.start_fighting()
-	enemy.start_fighting()
+	gladiator_match.start()
 
 
 func _process(_delta: float) -> void:
@@ -57,16 +52,6 @@ func _on_unit_hurt(unit: Node2D, amount: int) -> void:
 	var spawn_at: Vector2 = unit.global_position + Vector2(-12.0, -90.0) * unit.scale
 	number.position = damage_numbers.to_local(spawn_at)
 	damage_numbers.add_child(number)
-
-
-func _on_unit_died(unit: Node2D) -> void:
-	if _battle_over:
-		return
-	_battle_over = true
-	hero.stop_fighting()
-	enemy.stop_fighting()
-	# The overlay listens for this on the bus; it is not wired to this scene directly.
-	GlobalSignalBus.battle_ended.emit(unit == enemy)
 
 
 func _place_nameplate(plate: BattleNameplate, unit: BattleUnit) -> void:

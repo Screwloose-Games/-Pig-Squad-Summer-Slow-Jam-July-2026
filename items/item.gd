@@ -12,6 +12,10 @@ extends RigidBody2D
 ## without bound. It blinks out the tail of that timer first so an item never simply
 ## vanishes: the player gets told before the item they were reaching for is gone.
 
+## Fired when the DragController picks this item up, including out of a hotbar slot —
+## that is the moment a slot holding this item must consider it gone.
+signal grabbed
+
 ## Authored size of the placeholder square, which the JUNK def is drawn with. Scaling the
 ## placeholder against this is what lets junk honour ItemDef.size like every other type.
 const PLACEHOLDER_SIZE: Vector2 = Vector2(48, 48)
@@ -44,10 +48,6 @@ const PLACEHOLDER_SIZE: Vector2 = Vector2(48, 48)
 @export var blink_rate: float = 5.0
 ## Alpha each blink dips to. Kept above 0 so a blinking piece is still grabbable.
 @export var blink_min_alpha: float = 0.2
-
-## Fired when the DragController picks this item up, including out of a hotbar slot —
-## that is the moment a slot holding this item must consider it gone.
-signal grabbed
 
 var is_carried: bool = false
 var is_slotted: bool = false
@@ -150,6 +150,9 @@ func use_on(unit: BattleUnit) -> void:
 	if not has_effect():
 		return
 	definition.effect.apply(unit)
+	# What was eaten or drunk, before this node goes: the def's effect subclass is what
+	# separates meat from a potion, and the node is about to stop being readable.
+	GlobalSignalBus.item_consumed.emit(definition, unit)
 	queue_free()
 
 
@@ -166,6 +169,7 @@ func _spawn_unequipped(previous: EquipmentComponent.EquippedPiece, unit: BattleU
 	popped.global_position = unit.global_position + Vector2(0.0, -60.0)
 	popped.linear_velocity = Vector2(randf_range(-150.0, 150.0), -400.0)
 	popped.angular_velocity = randf_range(-6.0, 6.0)
+	GlobalSignalBus.equipment_piece_popped.emit(popped)
 
 
 ## Shows/hides the durability pie. Driven by the DragController for the hovered and
@@ -197,9 +201,7 @@ func enter_slot(at_global: Vector2) -> void:
 	PhysicsServer2D.body_set_state(
 		get_rid(), PhysicsServer2D.BODY_STATE_LINEAR_VELOCITY, Vector2.ZERO
 	)
-	PhysicsServer2D.body_set_state(
-		get_rid(), PhysicsServer2D.BODY_STATE_ANGULAR_VELOCITY, 0.0
-	)
+	PhysicsServer2D.body_set_state(get_rid(), PhysicsServer2D.BODY_STATE_ANGULAR_VELOCITY, 0.0)
 	collision_layer = 0
 	set_collision_layer_value(PhysicsLayers.SLOTTED_ITEM, true)
 	collision_mask = 0

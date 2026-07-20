@@ -43,8 +43,9 @@ func _physics_process(_delta: float) -> void:
 		_set_hovered_item(_item_at_point(get_global_mouse_position()))
 		return
 	if not is_instance_valid(_dragged):
-		_dragged = null
-		_set_hover_zone(null)
+		# Despawned out from under the cursor. The drag is over even though the player
+		# never let go, so anything running for its duration has to be told.
+		_end_drag()
 		_set_hovered_item(null)
 		return
 	_set_hovered_item(_dragged)
@@ -82,11 +83,21 @@ func _set_hovered_item(item: Item) -> void:
 func _set_hover_zone(zone: ItemDropZone) -> void:
 	if zone == _hover_zone:
 		return
-	if _hover_zone != null and is_instance_valid(_hover_zone):
+	var had_zone: bool = _hover_zone != null
+	if had_zone and is_instance_valid(_hover_zone):
 		_hover_zone.set_highlighted(false)
 	_hover_zone = zone
+	# This early-returns on an unchanged zone, so these fire once per hover rather than
+	# once per physics frame.
+	if had_zone:
+		# The carried item can already be freed here — a drag ended by a despawn clears the
+		# zone on its way out — so the cue reports the loss without naming a dead node.
+		GlobalSignalBus.item_hover_target_lost.emit(
+			_dragged if is_instance_valid(_dragged) else null
+		)
 	if _hover_zone != null:
 		_hover_zone.set_highlighted(true)
+		GlobalSignalBus.item_hover_target_entered.emit(_dragged, _hover_zone.get_unit())
 
 
 func _try_pick() -> void:
@@ -94,6 +105,7 @@ func _try_pick() -> void:
 	if best != null:
 		_dragged = best
 		_dragged.set_carried(true)
+		GlobalSignalBus.item_drag_started.emit(_dragged)
 
 
 ## Topmost item under a world point, or null. Serves both pickup and idle hover.
@@ -126,13 +138,9 @@ func _release() -> void:
 	# Items despawn on their own timer, so the carried one can be freed out from under us
 	# mid-drag. is_instance_valid is the dependable test for that, and _dragged is cleared
 	# either way so a dangling reference is never left behind.
-	if not is_instance_valid(_dragged):
-		_dragged = null
-		_set_hover_zone(null)
+	var item := _end_drag()
+	if item == null:
 		return
-	var item := _dragged
-	_dragged = null
-	_set_hover_zone(null)
 	item.set_carried(false)
 	# UI wins over world: a hotbar slot under the cursor claims the item before any
 	# gladiator does. Scenes without a hotbar (level_01) skip straight past this.
@@ -142,16 +150,45 @@ func _release() -> void:
 	_try_drop_on_unit(item)
 
 
+## Clears the drag state and reports that the drag is over, whichever way it ended — the
+## player letting go, or the item being freed mid-carry. Returns the item, or null if it
+## did not survive. The one place a drag ends, so nothing running for the drag's duration
+## can be left hanging.
+func _end_drag() -> Item:
+	var item := _dragged
+	# Before clearing _dragged: the hover-lost cue names the item that was being carried.
+	_set_hover_zone(null)
+	_dragged = null
+	if not is_instance_valid(item):
+		GlobalSignalBus.item_drag_ended.emit(null)
+		return null
+	GlobalSignalBus.item_drag_ended.emit(item)
+	return item
+
+
 ## Uses the released item on whichever unit's drop zone sits under the cursor — or under
 ## the item itself, which lags the cursor on its spring and is what the player is watching.
+## Re-queries rather than reusing _hover_zone, which _update_hover already nulled for a
+## target that cannot take this item — the refusal is exactly what has to be reported here.
 func _try_drop_on_unit(item: Item) -> void:
+	var refused_by: BattleUnit = null
 	for point in [get_global_mouse_position(), item.global_position]:
 		var zone := _drop_zone_at(point)
-		if zone != null:
-			var unit := zone.get_unit()
-			if unit != null and unit.is_alive() and item.can_use_on(unit):
-				item.use_on(unit)
-				return
+		if zone == null:
+			continue
+		var unit := zone.get_unit()
+		if unit == null or not unit.is_alive():
+			continue
+		if item.can_use_on(unit):
+			item.use_on(unit)
+			return
+		refused_by = unit
+	if refused_by != null:
+		# The player aimed at a gladiator and was turned down — junk, or equipment on a
+		# fighter that cannot wear it. Distinct from dropping on empty sand.
+		GlobalSignalBus.item_drop_rejected.emit(item, refused_by)
+	else:
+		GlobalSignalBus.item_drop_ignored.emit(item)
 
 
 ## Areas-only, so the ItemObstacle body sharing the gladiator layer stays invisible here.

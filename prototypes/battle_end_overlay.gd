@@ -44,6 +44,8 @@ func _on_battle_ended(hero_won: bool) -> void:
 		return
 	_result_label.text = victory_text if hero_won else defeat_text
 	_overlay_root.visible = true
+	# Past both guards above, so a reveal cancelled during the wait never announces itself.
+	GlobalSignalBus.match_result_revealed.emit(hero_won)
 
 
 func _on_restart_pressed() -> void:

@@ -1,13 +1,13 @@
 extends CanvasLayer
 
+var main_menu_scene: PackedScene = SceneManager.main_menu
+var options_menu_scene: PackedScene = SceneManager.options_menu
+
 @onready var continue_button = %ContinueButton
 @onready var options_button = %OptionsButton
 @onready var main_menu_button = %MainMenuButton
 @onready var pause_menu_body = %PauseMenuBody
 @onready var quit_button: Button = %QuitButton
-
-var main_menu_scene: PackedScene = SceneManager.MAIN_MENU
-var options_menu_scene: PackedScene = SceneManager.OPTIONS_MENU
 
 
 func _ready():
@@ -53,7 +53,7 @@ func on_continue_pressed():
 func on_main_menu_pressed():
 	unpause()
 	SceneTransitionManager.change_scene_with_transition(
-		main_menu_scene, SceneManager.FADE_TRANSITION
+		main_menu_scene, SceneManager.fade_transition
 	)
 
 

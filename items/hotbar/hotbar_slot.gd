@@ -9,10 +9,21 @@ extends PanelContainer
 ## with the same physics query it uses on the pile. The panel is drawn mostly transparent
 ## because the item renders on the world canvas *behind* this UI layer.
 
+## The green quickslot square. It backs the item in the *world*, not on this UI layer: the
+## item parked here is a live world body (see enter_slot), and a backing drawn on the UI
+## CanvasLayer above it would hide it. So the art lives behind the item, at world z_index 0.
+const BACKING_TEXTURE: Texture2D = preload("res://assets/art/ui/inv_slot.png")
+
+## Scale from the 126px art down to roughly this slot's footprint.
+const BACKING_SCALE: Vector2 = Vector2(0.7, 0.7)
+
 ## Which number key uses this slot; also the label in the corner.
 @export var slot_number: int = 1
 
 var item: Item = null
+
+# The world-space green square that frames whatever item sits in this slot.
+var _backing: Sprite2D = null
 
 # A direct child, not a %unique name: four slots live in one scene, and unique names
 # are registered per-owner, so four %NumberLabel registrations would collide.
@@ -21,6 +32,21 @@ var item: Item = null
 
 func _ready() -> void:
 	_number_label.text = str(slot_number)
+	_spawn_backing()
+
+
+# The slot's screen rect is only laid out after entering the tree, and the backing tracks it
+# in world space; four sprites a frame is cheap and keeps it correct across resizes.
+func _process(_delta: float) -> void:
+	if is_instance_valid(_backing):
+		_backing.global_position = _world_center()
+
+
+# The backing is parented into the world, not under this UI node, so it does not die with the
+# slot automatically — free it explicitly.
+func _exit_tree() -> void:
+	if is_instance_valid(_backing):
+		_backing.queue_free()
 
 
 func is_empty() -> bool:
@@ -74,3 +100,18 @@ func _disconnect_item() -> void:
 ## lives in the world. This is the inverse of the nameplate's world->screen conversion.
 func _world_center() -> Vector2:
 	return get_viewport().get_canvas_transform().affine_inverse() * get_global_rect().get_center()
+
+
+## Drops the green backing square into the world behind the item plane. Skipped when the slot
+## has no world to live in (e.g. the hotbar scene opened on its own).
+func _spawn_backing() -> void:
+	var world: Node = get_tree().current_scene
+	if world == null:
+		return
+	_backing = Sprite2D.new()
+	_backing.texture = BACKING_TEXTURE
+	_backing.scale = BACKING_SCALE
+	_backing.z_index = 0
+	# Deferred: this runs from the slot's _ready() while the scene root is still setting up its
+	# own children, when a direct add_child() is refused. _process places it once it is in-tree.
+	world.add_child.call_deferred(_backing)

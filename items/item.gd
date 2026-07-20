@@ -20,6 +20,10 @@ signal grabbed
 ## placeholder against this is what lets junk honour ItemDef.size like every other type.
 const PLACEHOLDER_SIZE: Vector2 = Vector2(48, 48)
 
+## Draw order while parked in a hotbar slot. The slot's green backing sprite lives in the
+## world at z_index 0, so a slotted item is lifted above it to read as sitting *in* the slot.
+const SLOTTED_Z_INDEX: int = 10
+
 ## What kind of item this is. Assigned by the spawner *before* the node enters the tree,
 ## because _ready() is what stamps it onto the body.
 @export var definition: ItemDef
@@ -205,6 +209,8 @@ func enter_slot(at_global: Vector2) -> void:
 	collision_layer = 0
 	set_collision_layer_value(PhysicsLayers.SLOTTED_ITEM, true)
 	collision_mask = 0
+	# Lift above the slot's green backing (world z_index 0) so the item reads as in the slot.
+	z_index = SLOTTED_Z_INDEX
 	is_slotted = true
 
 
@@ -217,6 +223,7 @@ func _exit_slot() -> void:
 	set_collision_mask_value(PhysicsLayers.WORLD, true)
 	set_collision_mask_value(PhysicsLayers.ITEM, true)
 	set_collision_mask_value(PhysicsLayers.GLADIATOR, true)
+	z_index = 0
 	is_slotted = false
 
 

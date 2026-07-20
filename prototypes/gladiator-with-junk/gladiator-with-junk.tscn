@@ -91,10 +91,21 @@ unique_name_in_owner = true
 
 [node name="EnemyNameplate" parent="UI" unique_id=1928345018 instance=ExtResource("11_nmplt")]
 unique_name_in_owner = true
+offset_left = 929.0
+offset_top = 12.0
+offset_right = 1574.0
+offset_bottom = 248.0
+scale = Vector2(0.52, 0.52)
 side = 1
+mirrored = true
 
 [node name="HeroNameplate" parent="UI" unique_id=742675149 instance=ExtResource("11_nmplt")]
 unique_name_in_owner = true
+offset_left = 16.0
+offset_top = 12.0
+offset_right = 661.0
+offset_bottom = 248.0
+scale = Vector2(0.52, 0.52)
 
 [node name="Hotbar" parent="UI" unique_id=300981232 node_paths=PackedStringArray("hero") instance=ExtResource("12_hotbar")]
 anchors_preset = 5

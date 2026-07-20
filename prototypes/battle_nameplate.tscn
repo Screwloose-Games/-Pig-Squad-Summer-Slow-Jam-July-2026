@@ -1,107 +1,108 @@
 [gd_scene format=3 uid="uid://bnp1tk8qy4wxv"]
 
-[ext_resource type="Script" path="res://prototypes/battle_nameplate.gd" id="1_nmplt"]
+[ext_resource type="Script" uid="uid://b8ho7wfaumy6b" path="res://prototypes/battle_nameplate.gd" id="1_nmplt"]
 [ext_resource type="Theme" uid="uid://dxcditpyjnw8h" path="res://common/themes/theme.tres" id="2_theme"]
+[ext_resource type="Texture2D" uid="uid://bp0kvf5gtt43h" path="res://assets/art/ui/fill_bar_bg.png" id="3_bg"]
+[ext_resource type="Texture2D" uid="uid://bkhx6su77nisb" path="res://assets/art/ui/name_plate.png" id="4_plate"]
+[ext_resource type="Texture2D" uid="uid://btrjolsglto2l" path="res://assets/art/ui/hp_bg.png" id="5_hpbg"]
+[ext_resource type="Texture2D" uid="uid://dkxihc6ip5j57" path="res://assets/art/ui/hp_fill.png" id="6_hpfill"]
+[ext_resource type="Texture2D" uid="uid://csrwfxa2wa8hr" path="res://assets/art/ui/hp_fg.png" id="7_hpfg"]
+[ext_resource type="Texture2D" uid="uid://dejf4yum2asp3" path="res://assets/art/ui/stam_bg.png" id="8_stbg"]
+[ext_resource type="Texture2D" uid="uid://dwgy5hgq1p5lq" path="res://assets/art/ui/stam_fill.png" id="9_stfill"]
+[ext_resource type="Texture2D" uid="uid://bpvuuwonpdxry" path="res://assets/art/ui/stam_fg.png" id="10_stfg"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_plate"]
-content_margin_left = 12.0
-content_margin_top = 10.0
-content_margin_right = 12.0
-content_margin_bottom = 10.0
-bg_color = Color(0.964706, 0.94902, 0.905882, 1)
-corner_radius_top_left = 9
-corner_radius_top_right = 9
-corner_radius_bottom_right = 9
-corner_radius_bottom_left = 9
-corner_detail = 12
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_stamina"]
-bg_color = Color(0.99607843, 0.68235296, 0.20392157, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.247059, 0.14902, 0.192157, 1)
-
-[node name="BattleNameplate" type="PanelContainer"]
-offset_right = 460.0
-offset_bottom = 130.0
+[node name="BattleNameplate" type="Control" unique_id=715260893]
+custom_minimum_size = Vector2(645, 236)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 645.0
+offset_bottom = 236.0
 mouse_filter = 2
 theme = ExtResource("2_theme")
-theme_override_styles/panel = SubResource("StyleBoxFlat_plate")
 script = ExtResource("1_nmplt")
 
-[node name="VBox" type="VBoxContainer" parent="."]
-layout_mode = 2
-mouse_filter = 2
-theme_override_constants/separation = 4
-
-[node name="TopRow" type="HBoxContainer" parent="VBox"]
-layout_mode = 2
-mouse_filter = 2
-
-[node name="NameLabel" type="Label" parent="VBox/TopRow"]
+[node name="Backing" type="TextureRect" parent="." unique_id=1409506941]
 unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
+self_modulate = Color(0, 0.8, 0.698, 1)
+layout_mode = 0
+offset_top = 45.0
+offset_right = 645.0
+offset_bottom = 236.0
 mouse_filter = 2
+texture = ExtResource("3_bg")
+
+[node name="HealthBar" type="TextureProgressBar" parent="." unique_id=760804238]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -232.0
+offset_top = -24.0
+offset_right = 232.0
+offset_bottom = 24.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+value = 100.0
+texture_under = ExtResource("5_hpbg")
+texture_over = ExtResource("7_hpfg")
+texture_progress = ExtResource("6_hpfill")
+tint_progress = Color(1, 0.0627451, 0.301961, 1)
+
+[node name="StaminaBar" type="TextureProgressBar" parent="." unique_id=1550314930]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -192.5
+offset_top = 45.0
+offset_right = 270.5
+offset_bottom = 93.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
+value = 100.0
+texture_under = ExtResource("8_stbg")
+texture_over = ExtResource("10_stfg")
+texture_progress = ExtResource("9_stfill")
+tint_progress = Color(0.866667, 0.85098, 0, 1)
+
+[node name="NamePlate" type="TextureRect" parent="." unique_id=489507181]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 30.0
+offset_right = 480.0
+offset_bottom = 84.0
+mouse_filter = 2
+texture = ExtResource("4_plate")
+
+[node name="NameLabel" type="Label" parent="NamePlate" unique_id=1621166665]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 45.0
+offset_top = 24.0
+offset_right = 320.0
+offset_bottom = 62.0
+theme_override_colors/font_color = Color(0.164706, 0.101961, 0.129412, 1)
 text = "Name"
+vertical_alignment = 1
 
-[node name="LevelLabel" type="Label" parent="VBox/TopRow"]
+[node name="LevelLabel" type="Label" parent="NamePlate" unique_id=556270301]
 unique_name_in_owner = true
-layout_mode = 2
-mouse_filter = 2
+layout_mode = 0
+offset_left = 350.0
+offset_top = 24.0
+offset_right = 445.0
+offset_bottom = 62.0
+theme_override_colors/font_color = Color(0.164706, 0.101961, 0.129412, 1)
 text = "Lv.1"
-
-[node name="HpRow" type="HBoxContainer" parent="VBox"]
-layout_mode = 2
-mouse_filter = 2
-theme_override_constants/separation = 8
-
-[node name="HpTag" type="Label" parent="VBox/HpRow"]
-layout_mode = 2
-mouse_filter = 2
-text = "HP"
-
-[node name="HealthBar" type="ProgressBar" parent="VBox/HpRow"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 14)
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 4
-mouse_filter = 2
-show_percentage = false
-
-[node name="HpNumbers" type="Label" parent="VBox"]
-unique_name_in_owner = true
-layout_mode = 2
-mouse_filter = 2
-text = "0/0"
 horizontal_alignment = 2
-
-[node name="StaminaRow" type="HBoxContainer" parent="VBox"]
-layout_mode = 2
-mouse_filter = 2
-theme_override_constants/separation = 8
-
-[node name="SpTag" type="Label" parent="VBox/StaminaRow"]
-layout_mode = 2
-mouse_filter = 2
-text = "SP"
-
-[node name="StaminaBar" type="ProgressBar" parent="VBox/StaminaRow"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 14)
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 4
-mouse_filter = 2
-theme_override_styles/fill = SubResource("StyleBoxFlat_stamina")
-show_percentage = false
-
-[node name="StaminaNumbers" type="Label" parent="VBox"]
-unique_name_in_owner = true
-layout_mode = 2
-mouse_filter = 2
-text = "0/0"
-horizontal_alignment = 2
+vertical_alignment = 1

@@ -22,14 +22,14 @@ func _ready() -> void:
 
 func _on_start_pressed():
 	SceneTransitionManager.change_scene_with_transition(
-		SceneManager.MAIN_LEVEL, SceneManager.FADE_TRANSITION
+		SceneManager.main_level, SceneManager.fade_transition
 	)
 
 
 func _on_credits_pressed():
 	GlobalSignalBus.credits_screen_started.emit()
 	SceneTransitionManager.change_scene_with_transition(
-		SceneManager.CREDITS, SceneManager.FADE_TRANSITION
+		SceneManager.credits, SceneManager.fade_transition
 	)
 
 

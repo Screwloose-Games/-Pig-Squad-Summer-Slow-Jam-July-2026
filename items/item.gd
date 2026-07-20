@@ -12,6 +12,10 @@ extends RigidBody2D
 ## without bound. It blinks out the tail of that timer first so an item never simply
 ## vanishes: the player gets told before the item they were reaching for is gone.
 
+## Fired when the DragController picks this item up, including out of a hotbar slot —
+## that is the moment a slot holding this item must consider it gone.
+signal grabbed
+
 ## Authored size of the placeholder square, which the JUNK def is drawn with. Scaling the
 ## placeholder against this is what lets junk honour ItemDef.size like every other type.
 const PLACEHOLDER_SIZE: Vector2 = Vector2(48, 48)
@@ -44,10 +48,6 @@ const PLACEHOLDER_SIZE: Vector2 = Vector2(48, 48)
 @export var blink_rate: float = 5.0
 ## Alpha each blink dips to. Kept above 0 so a blinking piece is still grabbable.
 @export var blink_min_alpha: float = 0.2
-
-## Fired when the DragController picks this item up, including out of a hotbar slot —
-## that is the moment a slot holding this item must consider it gone.
-signal grabbed
 
 var is_carried: bool = false
 var is_slotted: bool = false

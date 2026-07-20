@@ -1,17 +1,5 @@
-extends Node
 class_name SoundEffectConnector
-
-@export var player_type: GSoundManager.SoundPlayerType
-@export_enum("GlobalSignalBus", "QuestManager", "EnvironmentManager", "StructureManager") var global_name: String
-@export var start_signal_name: String
-@export var stop_signal_name: String
-@export var sound_effect: AudioStream
-
-@onready var signal_node = get_tree().get_root().get_node(global_name)
-@onready var sound_manager = get_parent()
-
-var try_connect_start_result: int = FAILED
-var try_connect_stop_result: int = FAILED
+extends Node
 
 # extends: https://docs.godotengine.org/en/stable/classes/class_@globalscope.html#enum-globalscope-error
 enum TryConnectError {
@@ -19,6 +7,19 @@ enum TryConnectError {
 	NO_SIGNAL_NAME = 50,
 	NO_MATCHING_SIGNAL_NAME = 51,
 }
+
+@export var player_type: GSoundManager.SoundPlayerType
+@export_enum("GlobalSignalBus", "QuestManager", "EnvironmentManager", "StructureManager")
+var global_name: String
+@export var start_signal_name: String
+@export var stop_signal_name: String
+@export var sound_effect: AudioStream
+
+var try_connect_start_result: int = FAILED
+var try_connect_stop_result: int = FAILED
+
+@onready var signal_node = get_tree().get_root().get_node(global_name)
+@onready var sound_manager = get_parent()
 
 
 func _ready() -> void:
